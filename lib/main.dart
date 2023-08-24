@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:porcelain/product/add_product_dialog.dart';
 import 'package:porcelain/product/product.dart';
+import 'package:porcelain/product_card.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +50,14 @@ class _ProductsPageState extends State<ProductsPage> {
     });
   }
 
+  void deleteProduct(Product product) {
+    var box = Hive.box<Product>('productBox');
+    box.delete(product.key); // Assuming 'key' is a property you set when adding products
+    setState(() {
+
+    });
+  }
+
 
   @override
   void dispose() {
@@ -72,7 +81,8 @@ class _ProductsPageState extends State<ProductsPage> {
       body: ListView.builder(
         itemCount: box.length,
         itemBuilder: (context, index) {
-          return makeProductCard(box.getAt(index)!);
+          Product product = box.getAt(index)!;
+          return ProductCard(product: product, onDelete: () => deleteProduct(product),);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -82,31 +92,4 @@ class _ProductsPageState extends State<ProductsPage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-}
-
-Card makeProductCard(Product product) {
-  return Card(
-    elevation: 4,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: const Icon(Icons.clean_hands),
-          title: Text(product.name),
-          subtitle: Text(product.purpose),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (product.monthsToReplacement != null)
-                Text('Months to Replacement: ${product.monthsToReplacement}'),
-              Text('Replace: ${product.replace ? "Yes" : "No"}'),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
 }
