@@ -5,8 +5,9 @@ import 'package:porcelain/product/product.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
 
-  const ProductCard({super.key, required this.product, required this.onDelete});
+  const ProductCard({super.key, required this.product, required this.onDelete, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +44,30 @@ class ProductCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.deepPurple,
+                  shape: BoxShape.rectangle,
+                  color: Colors.purple,
                 ),
                 child: const Icon(
                   Icons.close,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: onEdit,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: Colors.purple,
+                ),
+                child: const Icon(
+                  Icons.edit,
                   color: Colors.white,
                   size: 16,
                 ),

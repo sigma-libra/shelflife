@@ -7,6 +7,14 @@ class Product extends HiveObject {
   Product(
       {required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price = 0});
 
+
+  Product.empty()
+      : name = '',
+        monthsToReplacement = null,
+        purpose = '',
+        replace = false,
+        price = 0;
+
   @HiveField(0)
   String name;
 

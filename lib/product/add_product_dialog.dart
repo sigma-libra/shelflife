@@ -4,13 +4,15 @@ import 'package:porcelain/product/product.dart';
 
 class AddProductDialog extends StatelessWidget {
 
-  const AddProductDialog({super.key});
+  Product? product;
+
+  AddProductDialog({super.key, this.product});
 
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController();
-    TextEditingController purposeController = TextEditingController();
+    TextEditingController nameController = TextEditingController(text: product?.name ?? "");
+    TextEditingController purposeController = TextEditingController(text: product?.purpose ?? "");
     return AlertDialog(
       title: const Text('Add New Product'),
       content: Column(
@@ -19,6 +21,7 @@ class AddProductDialog extends StatelessWidget {
           TextField(
             controller: nameController,
             decoration: const InputDecoration(labelText: 'Product Name'),
+
           ),
           TextField(
             controller: purposeController,
@@ -36,14 +39,14 @@ class AddProductDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             // Create a new product object with the user input
-            Product newProduct = Product(
+            product = Product(
               name: nameController.text,
               purpose: purposeController.text,
             );
 
-            Navigator.of(context).pop(newProduct); // Close the dialog
+            Navigator.of(context).pop(product); // Close the dialog
           },
-          child: const Text('Add'),
+          child: Text((product != null) ? "Edit":'Add'),
         ),
       ],
     );
