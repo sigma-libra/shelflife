@@ -1,6 +1,6 @@
 {
-    "name": "porcelain",
-    "short_name": "porcelain",
+    "name": "shelflife",
+    "short_name": "shelflife",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

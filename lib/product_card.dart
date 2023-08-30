@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:porcelain/product/product.dart';
+import 'package:shelflife/colors.dart';
+import 'package:shelflife/product/product.dart';
 
 
 class ProductCard extends StatelessWidget {
@@ -12,6 +13,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: LIGHT_BLUE,
       elevation: 4,
       child: Stack(
         children: [
@@ -19,7 +21,7 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                leading: const Icon(Icons.clean_hands),
+                leading: const Icon(Icons.scale),
                 title: Text(product.name),
                 subtitle: Text(product.purpose),
               ),
@@ -43,9 +45,9 @@ class ProductCard extends StatelessWidget {
               onTap: onDelete,
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: Colors.purple,
+                  color: BROWN,
                 ),
                 child: const Icon(
                   Icons.close,
@@ -62,9 +64,9 @@ class ProductCard extends StatelessWidget {
               onTap: onEdit,
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: Colors.purple,
+                  color: BROWN,
                 ),
                 child: const Icon(
                   Icons.edit,

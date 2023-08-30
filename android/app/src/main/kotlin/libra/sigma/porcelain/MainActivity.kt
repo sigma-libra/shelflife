@@ -1,4 +1,4 @@
-package libra.sigma.porcelain
+package libra.sigma.shelflife
 
 import io.flutter.embedding.android.FlutterActivity
 

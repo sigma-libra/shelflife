@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "libra.sigma" "\0"
-            VALUE "FileDescription", "porcelain" "\0"
+            VALUE "FileDescription", "shelflife" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "porcelain" "\0"
+            VALUE "InternalName", "shelflife" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 libra.sigma. All rights reserved." "\0"
-            VALUE "OriginalFilename", "porcelain.exe" "\0"
-            VALUE "ProductName", "porcelain" "\0"
+            VALUE "OriginalFilename", "shelflife.exe" "\0"
+            VALUE "ProductName", "shelflife" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

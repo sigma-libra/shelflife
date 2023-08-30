@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="porcelain"
+        android:label="Shelf Life"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

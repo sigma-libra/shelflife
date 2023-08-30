@@ -1,9 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:porcelain/product/add_product_dialog.dart';
-import 'package:porcelain/product/product.dart';
-import 'package:porcelain/product_card.dart';
+import 'package:shelflife/colors.dart';
+import 'package:shelflife/product/add_product_dialog.dart';
+import 'package:shelflife/product/product.dart';
+import 'package:shelflife/product_card.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Porcelain',
       theme: ThemeData(
-
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: LIGHT_BROWN,
+        colorScheme: ColorScheme.fromSeed(seedColor: BLUE),
         useMaterial3: true,
       ),
       home: const ProductsPage(),

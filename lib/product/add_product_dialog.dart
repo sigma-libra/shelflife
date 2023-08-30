@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:porcelain/product/product.dart';
+import 'package:shelflife/product/product.dart';
 
 class AddProductDialog extends StatelessWidget {
 
