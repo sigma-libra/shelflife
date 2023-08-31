@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shelf Life',
       theme: ThemeData(
-        scaffoldBackgroundColor: LIGHT_BLUE,
-        //colorScheme: ColorScheme.fromSeed(seedColor: BROWN),
+        scaffoldBackgroundColor: WALL_BLUE,
+        colorScheme: ColorScheme.fromSeed(seedColor: ORANGE),
         useMaterial3: true,
       ),
       home: const ProductsPage(),
@@ -84,9 +84,9 @@ class _ProductsPageState extends State<ProductsPage> {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: DARK_BLUE,
+        backgroundColor: DARK_BROWN,
 
-        title: const Text("Your Products", style: TextStyle(color: POT_BEIGE),),
+        title: const Text("Your Products", style: TextStyle(color: ORANGE),),
       ),
       body: ListView.builder(
         itemCount: box.length,
@@ -100,9 +100,10 @@ class _ProductsPageState extends State<ProductsPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: ORANGE,
         onPressed: addProduct,
         tooltip: 'Add Product',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: DARK_BROWN,),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

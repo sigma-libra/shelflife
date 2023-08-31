@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 
 class AddProductDialog extends StatelessWidget {
@@ -14,6 +15,7 @@ class AddProductDialog extends StatelessWidget {
     TextEditingController nameController = TextEditingController(text: product?.name ?? "");
     TextEditingController purposeController = TextEditingController(text: product?.purpose ?? "");
     return AlertDialog(
+      backgroundColor: PALE_ORANGE,
       title: const Text('Add New Product'),
       content: Column(
         mainAxisSize: MainAxisSize.min,

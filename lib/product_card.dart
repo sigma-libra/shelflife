@@ -21,9 +21,9 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                leading: const Icon(Icons.scale, color: DARK_BLUE,),
-                title: Text(product.name),
-                subtitle: Text(product.purpose),
+                leading: const Icon(Icons.scale, color: ORANGE,),
+                title: Text(product.name, style: TextStyle(color: BLACK_BROWN),),
+                subtitle: Text(product.purpose, style: TextStyle(color: BLACK_BROWN),),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -31,8 +31,8 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (product.monthsToReplacement != null)
-                      Text('Months to Replacement: ${product.monthsToReplacement}'),
-                    Text('Replace: ${product.replace ? "Yes" : "No"}'),
+                      Text('Months to Replacement: ${product.monthsToReplacement}',style: TextStyle(color: BLACK_BROWN),),
+                    Text('Replace: ${product.replace ? "Yes" : "No"}', style: TextStyle(color: BLACK_BROWN),),
                   ],
                 ),
               ),
@@ -47,11 +47,11 @@ class ProductCard extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: DARK_BLUE,
+                  color: DARK_BROWN,
                 ),
                 child: const Icon(
                   Icons.close,
-                  color: POT_BEIGE,
+                  color: ORANGE,
                   size: 16,
                 ),
               ),
@@ -66,11 +66,11 @@ class ProductCard extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: DARK_BLUE,
+                  color: DARK_BROWN,
                 ),
                 child: const Icon(
                   Icons.edit,
-                  color: POT_BEIGE,
+                  color: ORANGE,
                   size: 16,
                 ),
               ),
