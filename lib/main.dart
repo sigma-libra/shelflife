@@ -22,10 +22,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Porcelain',
+      title: 'Shelf Life',
       theme: ThemeData(
-        scaffoldBackgroundColor: LIGHT_BROWN,
-        colorScheme: ColorScheme.fromSeed(seedColor: BLUE),
+        scaffoldBackgroundColor: LIGHT_BLUE,
+        //colorScheme: ColorScheme.fromSeed(seedColor: BROWN),
         useMaterial3: true,
       ),
       home: const ProductsPage(),
@@ -84,9 +84,9 @@ class _ProductsPageState extends State<ProductsPage> {
     return Scaffold(
       appBar: AppBar(
 
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: DARK_BLUE,
 
-        title: const Text("Your Products"),
+        title: const Text("Your Products", style: TextStyle(color: POT_BEIGE),),
       ),
       body: ListView.builder(
         itemCount: box.length,

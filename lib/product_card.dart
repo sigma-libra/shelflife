@@ -13,7 +13,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: LIGHT_BLUE,
+      color: LIGHT_BROWN,
       elevation: 4,
       child: Stack(
         children: [
@@ -21,7 +21,7 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                leading: const Icon(Icons.scale),
+                leading: const Icon(Icons.scale, color: DARK_BLUE,),
                 title: Text(product.name),
                 subtitle: Text(product.purpose),
               ),
@@ -47,11 +47,11 @@ class ProductCard extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: BROWN,
+                  color: DARK_BLUE,
                 ),
                 child: const Icon(
                   Icons.close,
-                  color: Colors.white,
+                  color: POT_BEIGE,
                   size: 16,
                 ),
               ),
@@ -66,11 +66,11 @@ class ProductCard extends StatelessWidget {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
-                  color: BROWN,
+                  color: DARK_BLUE,
                 ),
                 child: const Icon(
                   Icons.edit,
-                  color: Colors.white,
+                  color: POT_BEIGE,
                   size: 16,
                 ),
               ),
