@@ -1,34 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 
-class AddProductDialog extends StatelessWidget {
+class AddProductDialog extends StatefulWidget {
+  final Product? product;
 
-  Product? product;
+  AddProductDialog({Key? key, this.product}) : super(key: key);
 
-  AddProductDialog({super.key, this.product});
+  @override
+  _AddProductDialogState createState() => _AddProductDialogState();
+}
+
+class _AddProductDialogState extends State<AddProductDialog> {
+  late TextEditingController nameController;
+  late TextEditingController purposeController;
+  late TextEditingController monthsToReplacementController;
+  late ValueNotifier<bool> replaceValue;
+  late TextEditingController priceController;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.product?.name ?? "");
+    purposeController = TextEditingController(text: widget.product?.purpose ?? "");
+    monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
+    replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
+    priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
+  }
+
+  @override
+  void dispose() {
+    replaceValue.dispose();
+    super.dispose();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController(text: product?.name ?? "");
-    TextEditingController purposeController = TextEditingController(text: product?.purpose ?? "");
+    TextEditingController nameController = TextEditingController(text: widget.product?.name ?? "");
+    TextEditingController purposeController = TextEditingController(text: widget.product?.purpose ?? "");
+    TextEditingController monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
+    ValueNotifier<bool> replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
+    TextEditingController priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
+
     return AlertDialog(
       backgroundColor: PALE_ORANGE,
       title: const Text('Add New Product'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(labelText: 'Product Name'),
-
-          ),
-          TextField(
-            controller: purposeController,
-            decoration: const InputDecoration(labelText: 'Product Purpose'),
-          ),
+          textField(nameController, "Product Name"),
+          textField(purposeController, "Product Purpose"),
+          textField(monthsToReplacementController, "Months to Replacement"),
+          boolField("Replace", replaceValue),
+          textField(priceController, "Price"),
         ],
       ),
       actions: [
@@ -41,16 +66,47 @@ class AddProductDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             // Create a new product object with the user input
-            product = Product(
+            Product product = Product(
               name: nameController.text,
               purpose: purposeController.text,
+              monthsToReplacement: int.tryParse(monthsToReplacementController.text),
+              replace: replaceValue.value,
+              price: double.tryParse(priceController.text) ?? 0,
             );
 
             Navigator.of(context).pop(product); // Close the dialog
           },
-          child: Text((product != null) ? "Edit":'Add'),
+          child: Text((widget.product != null) ? "Edit" : 'Add'),
         ),
       ],
     );
   }
+
+  TextField textField(TextEditingController controller, String fieldLabel) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(labelText: fieldLabel),
+
+    );
+  }
+
+  Row boolField(String label, ValueNotifier<bool> fieldValue) {
+    return Row(
+      children: [
+        Text(label),
+        ValueListenableBuilder<bool>(
+          valueListenable: fieldValue,
+          builder: (context, value, child) {
+            return Switch(
+              value: value,
+              onChanged: (newValue) {
+                fieldValue.value = newValue;
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+
 }
