@@ -82,15 +82,30 @@ class _ProductsPageState extends State<ProductsPage> {
           style: TextStyle(color: ORANGE),
         ),
       ),
-      body: ListView.builder(
+      body: ReorderableListView.builder(
         itemCount: box.length,
         itemBuilder: (context, index) {
           Product product = box.getAt(index)!;
           return ProductCard(
+            key: Key('$index'),
             product: product,
             onDelete: () => deleteProduct(product),
             onEdit: () => editProduct(product),
           );
+        },
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            var productList = box.values.toList();
+            Product movedProduct = productList.removeAt(oldIndex);
+            productList.insert(newIndex, movedProduct);
+            box.deleteAll(box.keys);
+            for (var i = 0; i < productList.length; i++) {
+              box.put(i, productList[i]);
+            }
+          });
         },
       ),
       floatingActionButton: FloatingActionButton(
