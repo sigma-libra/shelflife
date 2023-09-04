@@ -93,20 +93,17 @@ class _AddProductDialogState extends State<AddProductDialog> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label),
-        Padding(
-          padding: const EdgeInsets.only(left: 24.0, top: 4.0),
-          child: ValueListenableBuilder<bool>(
-            valueListenable: fieldValue,
-            builder: (context, value, child) {
-              return Switch(
-                activeColor: WALL_BLUE,
-                value: value,
-                onChanged: (newValue) {
-                  fieldValue.value = newValue;
-                },
-              );
-            },
-          ),
+        ValueListenableBuilder<bool>(
+          valueListenable: fieldValue,
+          builder: (context, value, child) {
+            return Switch(
+              activeColor: WALL_BLUE,
+              value: value,
+              onChanged: (newValue) {
+                fieldValue.value = newValue;
+              },
+            );
+          },
         ),
       ],
     );
@@ -121,12 +118,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
         Text(fieldLabel),
         SizedBox(
           width: textFieldWidth,
-          child: Expanded(
-            child: TextField(
-              controller: controller,
-              keyboardType: keyboardType,
-              textAlign: TextAlign.center,
-            ),
+          child: TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            textAlign: TextAlign.center,
           ),
         ),
       ],

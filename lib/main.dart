@@ -101,8 +101,8 @@ class _ProductsPageState extends State<ProductsPage> {
             var productList = box.values.toList();
             Product movedProduct = productList.removeAt(oldIndex);
             productList.insert(newIndex, movedProduct);
-            box.deleteAll(box.keys);
             for (var i = 0; i < productList.length; i++) {
+              box.delete(productList[i].key);
               box.put(i, productList[i]);
             }
           });
