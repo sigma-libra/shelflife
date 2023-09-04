@@ -4,12 +4,16 @@ import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/product_card.dart';
+import 'package:shelflife/tag/tag.dart';
+import 'package:shelflife/tag/tags_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  Hive.registerAdapter(ProductAdapter()); // Register the Product adapter
+  Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(TagAdapter());
   await Hive.openBox<Product>('productBox');
+  await Hive.openBox<Tag>("tagBox");
   runApp(const MyApp());
 }
 
@@ -72,7 +76,8 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box<Product>('productBox');
+    var productBox = Hive.box<Product>('productBox');
+    var tagBox = Hive.box<Tag>("tagBox");
 
     return Scaffold(
       appBar: AppBar(
@@ -81,11 +86,41 @@ class _ProductsPageState extends State<ProductsPage> {
           "Your Products",
           style: TextStyle(color: ORANGE),
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (String value) {
+              if (value == 'Tags') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TagsPage(
+                      tagsBox: tagBox,
+                    ),
+                  ),
+                );
+              } else if (value == 'Settings') {
+                // Handle the "Settings" option
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem(
+                  value: 'Tags',
+                  child: Text('Tags'),
+                ),
+                const PopupMenuItem(
+                  value: 'Settings',
+                  child: Text('Settings'),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: ReorderableListView.builder(
-        itemCount: box.length,
+        itemCount: productBox.length,
         itemBuilder: (context, index) {
-          Product product = box.getAt(index)!;
+          Product product = productBox.getAt(index)!;
           return ProductCard(
             key: Key('$index'),
             product: product,
@@ -98,19 +133,19 @@ class _ProductsPageState extends State<ProductsPage> {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
-            var productList = box.values.toList();
+            var productList = productBox.values.toList();
             Product movedProduct = productList.removeAt(oldIndex);
             productList.insert(newIndex, movedProduct);
             for (var i = 0; i < productList.length; i++) {
-              box.delete(productList[i].key);
-              box.put(i, productList[i]);
+              productBox.delete(productList[i].key);
+              productBox.put(i, productList[i]);
             }
           });
         },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: ORANGE,
-        onPressed: () => addProduct(box.length),
+        onPressed: () => addProduct(productBox.length),
         tooltip: 'Add Product',
         child: const Icon(
           Icons.add,

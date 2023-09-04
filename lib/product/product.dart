@@ -6,10 +6,6 @@ part 'product.g.dart';
 class Product extends HiveObject {
   Product({required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price});
 
-  Product setPosition(position) {
-    return this;
-  }
-
   @HiveField(0)
   String name;
 
@@ -24,4 +20,7 @@ class Product extends HiveObject {
 
   @HiveField(4)
   double? price;
+
+  @HiveField(5)
+  List<String> tags = List.empty();
 }
