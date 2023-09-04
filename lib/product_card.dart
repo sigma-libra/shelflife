@@ -22,17 +22,19 @@ class ProductCard extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.scale, color: ORANGE,),
-                title: Text(product.name, style: TextStyle(color: BLACK_BROWN),),
-                subtitle: Text(product.purpose, style: TextStyle(color: BLACK_BROWN),),
+                title: Text(product.name, style: defaultTextStyle(),),
+                subtitle: Text(product.purpose, style: defaultTextStyle(),),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Replace: ${product.replace ? "Yes" : "No"}', style: defaultTextStyle(),),
                     if (product.monthsToReplacement != null)
-                      Text('Months to Replacement: ${product.monthsToReplacement}',style: TextStyle(color: BLACK_BROWN),),
-                    Text('Replace: ${product.replace ? "Yes" : "No"}', style: TextStyle(color: BLACK_BROWN),),
+                      Text('Months to Replacement: ${product.monthsToReplacement}',style: defaultTextStyle(),),
+                    if(product.price != null)
+                      Text('Cost: ${product.price}', style: defaultTextStyle(),),
                   ],
                 ),
               ),
@@ -45,10 +47,7 @@ class ProductCard extends StatelessWidget {
               onTap: onDelete,
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: DARK_BROWN,
-                ),
+                decoration: defaultBoxDecoration(),
                 child: const Icon(
                   Icons.close,
                   color: ORANGE,
@@ -64,10 +63,7 @@ class ProductCard extends StatelessWidget {
               onTap: onEdit,
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: DARK_BROWN,
-                ),
+                decoration: defaultBoxDecoration(),
                 child: const Icon(
                   Icons.edit,
                   color: ORANGE,
@@ -78,6 +74,17 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  TextStyle defaultTextStyle() {
+    return const TextStyle(color: BLACK_BROWN);
+  }
+
+  BoxDecoration defaultBoxDecoration() {
+    return const BoxDecoration(
+      shape: BoxShape.rectangle,
+      color: DARK_BROWN,
     );
   }
 }

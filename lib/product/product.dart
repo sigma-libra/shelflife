@@ -4,16 +4,11 @@ part 'product.g.dart';
 
 @HiveType(typeId: 0)
 class Product extends HiveObject {
-  Product(
-      {required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price = 0});
+  Product({required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price});
 
-
-  Product.empty()
-      : name = '',
-        monthsToReplacement = null,
-        purpose = '',
-        replace = false,
-        price = 0;
+  Product setPosition(position) {
+    return this;
+  }
 
   @HiveField(0)
   String name;
@@ -28,5 +23,5 @@ class Product extends HiveObject {
   bool replace;
 
   @HiveField(4)
-  double price;
+  double? price;
 }

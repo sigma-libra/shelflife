@@ -5,7 +5,7 @@ import 'package:shelflife/product/product.dart';
 class AddProductDialog extends StatefulWidget {
   final Product? product;
 
-  AddProductDialog({Key? key, this.product}) : super(key: key);
+  const AddProductDialog({Key? key, this.product}) : super(key: key);
 
   @override
   _AddProductDialogState createState() => _AddProductDialogState();
@@ -34,7 +34,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     TextEditingController nameController = TextEditingController(text: widget.product?.name ?? "");
@@ -51,9 +50,9 @@ class _AddProductDialogState extends State<AddProductDialog> {
         children: [
           textField(nameController, "Product Name"),
           textField(purposeController, "Product Purpose"),
-          textField(monthsToReplacementController, "Months to Replacement"),
+          numberField(priceController, "Price", decimals: 2),
+          numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
           boolField("Replace", replaceValue),
-          textField(priceController, "Price"),
         ],
       ),
       actions: [
@@ -71,7 +70,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
               purpose: purposeController.text,
               monthsToReplacement: int.tryParse(monthsToReplacementController.text),
               replace: replaceValue.value,
-              price: double.tryParse(priceController.text) ?? 0,
+              price: double.tryParse(priceController.text),
             );
 
             Navigator.of(context).pop(product); // Close the dialog
@@ -86,27 +85,51 @@ class _AddProductDialogState extends State<AddProductDialog> {
     return TextField(
       controller: controller,
       decoration: InputDecoration(labelText: fieldLabel),
-
     );
   }
 
   Row boolField(String label, ValueNotifier<bool> fieldValue) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label),
-        ValueListenableBuilder<bool>(
-          valueListenable: fieldValue,
-          builder: (context, value, child) {
-            return Switch(
-              value: value,
-              onChanged: (newValue) {
-                fieldValue.value = newValue;
-              },
-            );
-          },
+        Padding(
+          padding: const EdgeInsets.only(left: 24.0, top: 4.0),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: fieldValue,
+            builder: (context, value, child) {
+              return Switch(
+                activeColor: WALL_BLUE,
+                value: value,
+                onChanged: (newValue) {
+                  fieldValue.value = newValue;
+                },
+              );
+            },
+          ),
         ),
       ],
     );
   }
 
+  Row numberField(TextEditingController controller, String fieldLabel, {int decimals = 0}) {
+    TextInputType keyboardType = (decimals > 0) ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.number;
+    double textFieldWidth = (decimals > 0) ? (decimals * 16.0) + 40.0 : 50.0;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(fieldLabel),
+        SizedBox(
+          width: textFieldWidth,
+          child: Expanded(
+            child: TextField(
+              controller: controller,
+              keyboardType: keyboardType,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
