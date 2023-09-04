@@ -4,7 +4,7 @@ part 'product.g.dart';
 
 @HiveType(typeId: 0)
 class Product extends HiveObject {
-  Product({required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price});
+  Product({required this.name, this.monthsToReplacement, required this.purpose, this.replace = false, this.price, required this.tags});
 
   @HiveField(0)
   String name;

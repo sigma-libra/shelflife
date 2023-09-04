@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
+import 'package:shelflife/tag/tag.dart';
 
 class AddProductDialog extends StatefulWidget {
   final Product? product;
+  final List<Tag> tags;
 
-  const AddProductDialog({Key? key, this.product}) : super(key: key);
+  const AddProductDialog({Key? key, this.product, required this.tags}) : super(key: key);
 
   @override
   _AddProductDialogState createState() => _AddProductDialogState();
@@ -17,6 +23,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
   late TextEditingController monthsToReplacementController;
   late ValueNotifier<bool> replaceValue;
   late TextEditingController priceController;
+  late List<Tag> selectedTags;
 
   @override
   void initState() {
@@ -26,6 +33,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
     monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
     replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
     priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
+    selectedTags = widget.product != null ? widget.product!.tags.map((e) => Tag(name: e, color: 0)).toList() : List.empty(growable: true);
   }
 
   @override
@@ -41,19 +49,23 @@ class _AddProductDialogState extends State<AddProductDialog> {
     TextEditingController monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
     ValueNotifier<bool> replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
     TextEditingController priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
+    List<Tag> selectedTags = widget.product != null ? widget.product!.tags.map((e) => Tag(name: e, color: 0)).toList() : List.empty(growable: true);
 
     return AlertDialog(
       backgroundColor: PALE_ORANGE,
       title: const Text('Add New Product'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          textField(nameController, "Product Name"),
-          textField(purposeController, "Product Purpose"),
-          numberField(priceController, "Price", decimals: 2),
-          numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
-          boolField("Replace", replaceValue),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            textField(nameController, "Product Name"),
+            textField(purposeController, "Product Purpose"),
+            numberField(priceController, "Price", decimals: 2),
+            numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
+            boolField("Replace", replaceValue),
+            tagField(selectedTags, widget.product)
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -66,12 +78,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
           onPressed: () {
             // Create a new product object with the user input
             Product product = Product(
-              name: nameController.text,
-              purpose: purposeController.text,
-              monthsToReplacement: int.tryParse(monthsToReplacementController.text),
-              replace: replaceValue.value,
-              price: double.tryParse(priceController.text),
-            );
+                name: nameController.text,
+                purpose: purposeController.text,
+                monthsToReplacement: int.tryParse(monthsToReplacementController.text),
+                replace: replaceValue.value,
+                price: double.tryParse(priceController.text),
+                tags: selectedTags.map((e) => e.name).toList());
 
             Navigator.of(context).pop(product); // Close the dialog
           },
@@ -124,6 +136,32 @@ class _AddProductDialogState extends State<AddProductDialog> {
             textAlign: TextAlign.center,
           ),
         ),
+      ],
+    );
+  }
+
+  Row tagField(List<Tag> selectedTags, Product? product) {
+    return Row(
+      children: [
+        Expanded(
+          child: MultiSelectDialogField<Tag>(
+            buttonText: const Text("Select Tags"),
+            title: const Text("Tags"),
+            initialValue: selectedTags,
+            items: widget.tags.map((e) => MultiSelectItem(e, e.name)).toList(),
+            onConfirm: (values) {
+              selectedTags = values;
+            },
+            listType: MultiSelectListType.CHIP,
+            chipDisplay: MultiSelectChipDisplay(
+              items: selectedTags.map((e) => MultiSelectItem(e, e.name)).toList(),
+              onTap: (value) => setState(() {
+                selectedTags.remove(value);
+              }),
+              scroll: true,
+            ),
+          ),
+        )
       ],
     );
   }

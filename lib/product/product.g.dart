@@ -22,7 +22,8 @@ class ProductAdapter extends TypeAdapter<Product> {
       purpose: fields[2] as String,
       replace: fields[3] as bool,
       price: fields[4] as double?,
-    )..tags = (fields[5] as List).cast<String>();
+      tags: (fields[5] as List).cast<String>(),
+    );
   }
 
   @override

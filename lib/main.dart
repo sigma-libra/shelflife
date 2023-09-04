@@ -44,18 +44,26 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   Future<void> addProduct(int productKey) async {
-    Product newProduct = await Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductDialog()));
+    List<Tag> tags = Hive.box<Tag>("tagBox").values.toList();
+    Product newProduct = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddProductDialog(
+                  tags: tags,
+                )));
     var box = Hive.box<Product>('productBox');
     box.put(productKey, newProduct);
     setState(() {});
   }
 
   Future<void> editProduct(Product product) async {
+    List<Tag> tags = Hive.box<Tag>("tagBox").values.toList();
     Product newProduct = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => AddProductDialog(
                   product: product,
+                  tags: tags,
                 )));
     var box = Hive.box<Product>('productBox');
     box.put(product.key, newProduct);
