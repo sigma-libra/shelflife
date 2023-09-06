@@ -13,6 +13,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tagMap = {for (var v in tags) v.name: v};
     return Card(
       color: LIGHT_BROWN,
       elevation: 4,
@@ -58,10 +59,10 @@ class ProductCard extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          for (String tag in product.tags)
+                          for (String tag in product.tags.where((tag) => tagMap.keys.contains(tag)))
                             Chip(
                               label: Text(tag),
-                              backgroundColor: Color(tags.firstWhere((element) => element.name == tag).color),
+                              backgroundColor: Color(tagMap[tag]!.color),
                               labelStyle: defaultTextStyle(),
                               side: BorderSide(color: LIGHT_BROWN),
                               visualDensity: VisualDensity.compact,

@@ -33,8 +33,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
     monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
     replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
     priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
-    selectedTags = widget.product != null
-        ? widget.product!.tags.map((productTag) => widget.tags.firstWhere((tag) => tag.name == productTag)).toList()
+    final existingTagNames = {for (var v in widget.tags) v.name: v};
+    selectedTags = widget.product?.tags != null
+        ? widget.product!.tags
+            .where((productTag) => existingTagNames.keys.contains(productTag))
+            .map((productTag) => existingTagNames[productTag]!)
+            .toList()
         : List.empty(growable: true);
   }
 
