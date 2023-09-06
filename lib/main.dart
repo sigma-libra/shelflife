@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
@@ -43,21 +45,32 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
+  var productBox = Hive.box<Product>('productBox');
+  var tagBox = Hive.box<Tag>("tagBox");
+  var filterTags = List<String>.empty();
+
+  @override
+  void initState() {
+    productBox = Hive.box<Product>('productBox');
+    tagBox = Hive.box<Tag>("tagBox");
+    filterTags = List<String>.empty();
+    super.initState();
+  }
+
   Future<void> addProduct(int productKey) async {
-    List<Tag> tags = Hive.box<Tag>("tagBox").values.toList();
+    List<Tag> tags = tagBox.values.toList();
     Product newProduct = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => AddProductDialog(
                   tags: tags,
                 )));
-    var box = Hive.box<Product>('productBox');
-    box.put(productKey, newProduct);
+    productBox.put(productKey, newProduct);
     setState(() {});
   }
 
   Future<void> editProduct(Product product) async {
-    List<Tag> tags = Hive.box<Tag>("tagBox").values.toList();
+    List<Tag> tags = tagBox.values.toList();
     Product newProduct = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -65,28 +78,30 @@ class _ProductsPageState extends State<ProductsPage> {
                   product: product,
                   tags: tags,
                 )));
-    var box = Hive.box<Product>('productBox');
-    box.put(product.key, newProduct);
+    productBox.put(product.key, newProduct);
     setState(() {});
   }
 
   void deleteProduct(Product product) {
-    var box = Hive.box<Product>('productBox');
-    box.delete(product.key);
+    productBox.delete(product.key);
     setState(() {});
+  }
+
+  void confirmTagFilter(List<Tag> newFilterTags) {
+    setState(() {
+      filterTags = newFilterTags.map((e) => e.name).toList();
+    });
   }
 
   @override
   void dispose() {
-    Hive.box<Product>('productBox').close();
+    productBox.close();
+    tagBox.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var productBox = Hive.box<Product>('productBox');
-    var tagBox = Hive.box<Tag>("tagBox");
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: DARK_BROWN,
@@ -95,6 +110,11 @@ class _ProductsPageState extends State<ProductsPage> {
           style: TextStyle(color: ORANGE),
         ),
         actions: [
+          MultiSelectDialogField<Tag>(
+            items: tagBox.values.map((e) => MultiSelectItem(e, e.name)).toList(),
+            onConfirm: confirmTagFilter,
+            chipDisplay: MultiSelectChipDisplay.none(),
+          ),
           PopupMenuButton<String>(
             onSelected: (String value) {
               if (value == 'Tags') {
@@ -129,12 +149,15 @@ class _ProductsPageState extends State<ProductsPage> {
         itemCount: productBox.length,
         itemBuilder: (context, index) {
           Product product = productBox.getAt(index)!;
-          return ProductCard(
+          return Visibility(
             key: Key('$index'),
-            product: product,
-            onDelete: () => deleteProduct(product),
-            onEdit: () => editProduct(product),
-            tags: tagBox.values.toList(),
+            visible: filterTags.isEmpty || product.tags.any((tag) => filterTags.contains(tag)),
+            child: ProductCard(
+              product: product,
+              onDelete: () => deleteProduct(product),
+              onEdit: () => editProduct(product),
+              tags: tagBox.values.toList(),
+            ),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
