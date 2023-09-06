@@ -33,7 +33,9 @@ class _AddProductDialogState extends State<AddProductDialog> {
     monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
     replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
     priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
-    selectedTags = widget.product != null ? widget.product!.tags.map((e) => Tag(name: e, color: 0)).toList() : List.empty(growable: true);
+    selectedTags = widget.product != null
+        ? widget.product!.tags.map((productTag) => widget.tags.firstWhere((tag) => tag.name == productTag)).toList()
+        : List.empty(growable: true);
   }
 
   @override
@@ -44,13 +46,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController(text: widget.product?.name ?? "");
-    TextEditingController purposeController = TextEditingController(text: widget.product?.purpose ?? "");
-    TextEditingController monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
-    ValueNotifier<bool> replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
-    TextEditingController priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
-    List<Tag> selectedTags = widget.product != null ? widget.product!.tags.map((e) => Tag(name: e, color: 0)).toList() : List.empty(growable: true);
-
     return AlertDialog(
       backgroundColor: PALE_ORANGE,
       title: const Text('Add New Product'),
@@ -63,7 +58,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
             numberField(priceController, "Price", decimals: 2),
             numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
             boolField("Replace", replaceValue),
-            tagField(selectedTags, widget.product)
+            tagField(widget.product)
           ],
         ),
       ),
@@ -140,7 +135,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 
-  Row tagField(List<Tag> selectedTags, Product? product) {
+  Row tagField(Product? product) {
     return Row(
       children: [
         Expanded(
@@ -152,12 +147,17 @@ class _AddProductDialogState extends State<AddProductDialog> {
             onConfirm: (values) {
               selectedTags = values;
             },
+            colorator: (tag) => Color(tag.color),
+            itemsTextStyle: const TextStyle(color: BLACK_BROWN),
+            selectedItemsTextStyle: const TextStyle(color: BLACK_BROWN),
             listType: MultiSelectListType.CHIP,
             chipDisplay: MultiSelectChipDisplay(
               items: selectedTags.map((e) => MultiSelectItem(e, e.name)).toList(),
               onTap: (value) => setState(() {
                 selectedTags.remove(value);
               }),
+              colorator: (tag) => Color(tag.color),
+              textStyle: const TextStyle(color: BLACK_BROWN),
               scroll: true,
             ),
           ),

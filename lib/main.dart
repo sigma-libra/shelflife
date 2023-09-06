@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
-import 'package:shelflife/product_card.dart';
+import 'package:shelflife/product/product_card.dart';
 import 'package:shelflife/tag/tag.dart';
 import 'package:shelflife/tag/tags_page.dart';
 
@@ -134,6 +134,7 @@ class _ProductsPageState extends State<ProductsPage> {
             product: product,
             onDelete: () => deleteProduct(product),
             onEdit: () => editProduct(product),
+            tags: tagBox.values.toList(),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
