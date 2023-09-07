@@ -87,10 +87,22 @@ class _ProductsPageState extends State<ProductsPage> {
     setState(() {});
   }
 
-  void confirmTagFilter(List<Tag> newFilterTags) {
-    setState(() {
-      filterTags = newFilterTags.map((e) => e.name).toList();
-    });
+  void _showTagMultiSelect(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return MultiSelectDialog<Tag>(
+          items: tagBox.values.map((e) => MultiSelectItem(e, e.name)).toList(),
+          initialValue: tagBox.values.where((e) => filterTags.contains(e.name)).toList(),
+          colorator: (tag) => Color(tag.color),
+          onConfirm: (newFilterTags) => {
+            setState(() {
+              filterTags = newFilterTags.map((e) => e.name).toList();
+            })
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -110,12 +122,14 @@ class _ProductsPageState extends State<ProductsPage> {
           style: TextStyle(color: ORANGE),
         ),
         actions: [
-          MultiSelectDialogField<Tag>(
-            items: tagBox.values.map((e) => MultiSelectItem(e, e.name)).toList(),
-            onConfirm: confirmTagFilter,
-            chipDisplay: MultiSelectChipDisplay.none(),
-          ),
+          IconButton(
+              onPressed: () => _showTagMultiSelect(context),
+              icon: Icon(
+                Icons.filter_list,
+                color: WALL_BLUE,
+              )),
           PopupMenuButton<String>(
+            color: WALL_BLUE,
             onSelected: (String value) {
               if (value == 'Tags') {
                 Navigator.push(
