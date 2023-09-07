@@ -48,6 +48,7 @@ class _ProductsPageState extends State<ProductsPage> {
   var productBox = Hive.box<Product>('productBox');
   var tagBox = Hive.box<Tag>("tagBox");
   var filterTags = List<String>.empty();
+  var textFilter = "";
 
   @override
   void initState() {
@@ -124,7 +125,7 @@ class _ProductsPageState extends State<ProductsPage> {
         actions: [
           IconButton(
               onPressed: () => _showTagMultiSelect(context),
-              icon: Icon(
+              icon: const Icon(
                 Icons.filter_list,
                 color: WALL_BLUE,
               )),
