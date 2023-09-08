@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shelflife/colors.dart';
+import 'package:shelflife/notification/NotificationService.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/product/product_card.dart';
@@ -49,6 +50,7 @@ class _ProductsPageState extends State<ProductsPage> {
   var tagBox = Hive.box<Tag>("tagBox");
   var filterTags = List<String>.empty();
   var textFilter = "";
+  NotificationService notificationService = NotificationService();
 
   @override
   void initState() {
@@ -56,6 +58,20 @@ class _ProductsPageState extends State<ProductsPage> {
     tagBox = Hive.box<Tag>("tagBox");
     filterTags = List<String>.empty();
     super.initState();
+  }
+
+  void setNotification(Product product, bool isNew) {
+    if (!isNew) {
+      notificationService.deleteNotification(product.productId);
+    }
+    if (product.monthsToReplacement != null) {
+      notificationService.showScheduledNotification(
+          id: product.productId,
+          title: "${product.name} reaching the end of its shelf life",
+          body:
+              "Your product is nearing the end of its ${product.monthsToReplacement}-month shelf life. If you want to keep it, longer, open the app to reset.",
+          date: DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30)));
+    }
   }
 
   Future<void> addProduct(int productKey) async {
@@ -67,6 +83,14 @@ class _ProductsPageState extends State<ProductsPage> {
                   tags: tags,
                 )));
     productBox.put(productKey, newProduct);
+    if (newProduct.monthsToReplacement != null) {
+      notificationService.showScheduledNotification(
+          id: newProduct.productId,
+          title: "${newProduct.name} reaching the end of its shelf life",
+          body:
+              "Your product is nearing the end of its ${newProduct.monthsToReplacement}-month shelf life. If you want to keep it, longer, open the app to reset.",
+          date: DateTime.fromMillisecondsSinceEpoch(newProduct.saveTime).add(Duration(days: newProduct.monthsToReplacement! * 30)));
+    }
     setState(() {});
   }
 

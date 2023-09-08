@@ -6,6 +6,7 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
+import 'package:shelflife/utils.dart';
 
 class AddProductDialog extends StatefulWidget {
   final Product? product;
@@ -77,9 +78,11 @@ class _AddProductDialogState extends State<AddProductDialog> {
           onPressed: () {
             // Create a new product object with the user input
             Product product = Product(
+                productId: widget.product?.productId ?? Utils.randomId(),
                 name: nameController.text,
-                purpose: purposeController.text,
+                saveTime: DateTime.now().millisecondsSinceEpoch,
                 monthsToReplacement: int.tryParse(monthsToReplacementController.text),
+                purpose: purposeController.text,
                 replace: replaceValue.value,
                 price: double.tryParse(priceController.text),
                 tags: selectedTags.map((e) => e.name).toList());

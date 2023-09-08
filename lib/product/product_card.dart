@@ -47,7 +47,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     if (product.monthsToReplacement != null)
                       Text(
-                        'Months to Replacement: ${product.monthsToReplacement}',
+                        'Months to Replacement: ${product.monthsToReplacement! - (DateTime.fromMillisecondsSinceEpoch(product.saveTime).difference(DateTime.now()).inDays / 30)}',
                         style: defaultTextStyle(),
                       ),
                     if (product.price != null)
@@ -64,7 +64,7 @@ class ProductCard extends StatelessWidget {
                               label: Text(tag),
                               backgroundColor: Color(tagMap[tag]!.color),
                               labelStyle: defaultTextStyle(),
-                              side: BorderSide(color: LIGHT_BROWN),
+                              side: const BorderSide(color: LIGHT_BROWN),
                               visualDensity: VisualDensity.compact,
                             ),
                         ],
