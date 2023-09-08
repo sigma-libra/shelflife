@@ -74,7 +74,7 @@ class _ProductsPageState extends State<ProductsPage> {
     }
   }
 
-  Future<void> addProduct(int productKey) async {
+  Future<void> addProduct() async {
     List<Tag> tags = tagBox.values.toList();
     Product newProduct = await Navigator.push(
         context,
@@ -82,9 +82,11 @@ class _ProductsPageState extends State<ProductsPage> {
             builder: (context) => AddProductDialog(
                   tags: tags,
                 )));
-    productBox.put(productKey, newProduct);
-    setNotification(newProduct, true);
-    setState(() {});
+
+    setState(() {
+      productBox.put(productBox.length, newProduct);
+      setNotification(newProduct, true);
+    });
   }
 
   Future<void> editProduct(Product product) async {
@@ -96,9 +98,10 @@ class _ProductsPageState extends State<ProductsPage> {
                   product: product,
                   tags: tags,
                 )));
-    productBox.put(product.key, newProduct);
-    setNotification(newProduct, false);
-    setState(() {});
+    setState(() {
+      productBox.put(product.key, newProduct);
+      setNotification(newProduct, false);
+    });
   }
 
   void deleteProduct(Product product) {
@@ -211,7 +214,7 @@ class _ProductsPageState extends State<ProductsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: ORANGE,
-        onPressed: () => addProduct(productBox.length),
+        onPressed: () => addProduct(),
         tooltip: 'Add Product',
         child: const Icon(
           Icons.add,
