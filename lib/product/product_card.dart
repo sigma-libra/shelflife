@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
+import 'package:shelflife/utils.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -47,7 +48,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     if (product.monthsToReplacement != null)
                       Text(
-                        'Months to Replacement: ${product.monthsToReplacement! - (DateTime.fromMillisecondsSinceEpoch(product.saveTime).difference(DateTime.now()).inDays / 30)}',
+                        'Months to Replacement: ${Utils.monthsLeftOnProduct(product)}',
                         style: defaultTextStyle(),
                       ),
                     if (product.price != null)

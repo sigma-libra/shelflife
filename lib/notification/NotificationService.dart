@@ -1,5 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shelflife/utils.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -54,7 +54,7 @@ class NotificationService {
   Future<void> showScheduledNotification({required int id, required String title, required String body, required DateTime date}) async {
     if (date.isAfter(DateTime.now().toUtc())) {
       final details = await _notificationDetails();
-      final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+      final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
       Location location = tz.getLocation(currentTimeZone);
       final tz.TZDateTime dateTime = tz.TZDateTime.from(date, location);
       await _localNotificationService.zonedSchedule(

@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:shelflife/product/product.dart';
+
 class Utils {
   static int randomId() {
-    return DateTime.now().microsecondsSinceEpoch;
+    return UniqueKey().hashCode;
   }
 
   static String formatPrettyDate(DateTime dateTime) {
@@ -13,5 +16,9 @@ class Utils {
     } else {
       return "$number";
     }
+  }
+
+  static int monthsLeftOnProduct(Product product) {
+    return (product.monthsToReplacement! - (DateTime.fromMillisecondsSinceEpoch(product.saveTime).difference(DateTime.now()).inDays / 30)).toInt();
   }
 }
