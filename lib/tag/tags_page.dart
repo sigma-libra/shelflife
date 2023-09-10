@@ -17,7 +17,7 @@ class TagsPage extends StatefulWidget {
 
 class _TagsPageState extends State<TagsPage> {
   final textEditingController = TextEditingController();
-  Color _selectedColor = Colors.brown; // Default color
+  Color _selectedColor = JAR_YELLOW; // Default color
 
   @override
   void dispose() {

@@ -19,7 +19,6 @@ class ProductCard extends StatelessWidget {
     final tagMap = {for (var v in tags) v.name: v};
     return Card(
       color: SHELF_BROWN,
-      shadowColor: JAR_YELLOW,
       elevation: 4,
       child: Stack(
         children: [
