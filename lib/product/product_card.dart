@@ -9,8 +9,10 @@ class ProductCard extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onEdit;
   final List<Tag> tags;
+  final String currencySymbol;
 
-  const ProductCard({super.key, required this.product, required this.onDelete, required this.onEdit, required this.tags});
+  const ProductCard(
+      {super.key, required this.product, required this.onDelete, required this.onEdit, required this.tags, required this.currencySymbol});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class ProductCard extends StatelessWidget {
                       ),
                     if (product.price != null)
                       Text(
-                        'Cost: ${product.price}',
+                        'Cost: $currencySymbol${product.price}',
                         style: defaultTextStyle(),
                       ),
                     SingleChildScrollView(

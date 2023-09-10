@@ -65,7 +65,7 @@ class _TagsPageState extends State<TagsPage> {
               decoration: InputDecoration(
                 hintText: 'Add a new tag',
                 prefixIcon: IconButton(
-                  icon: Icon(Icons.color_lens),
+                  icon: const Icon(Icons.color_lens),
                   color: _selectedColor,
                   onPressed: _openColorPickerDialog,
                 ),
@@ -99,7 +99,7 @@ class _TagsPageState extends State<TagsPage> {
       title: Text(tag.name),
       tileColor: color,
       leading: IconButton(
-        icon: Icon(Icons.color_lens),
+        icon: const Icon(Icons.color_lens),
         color: BLACK_BROWN,
         highlightColor: color,
         onPressed: () => _openColorPickerDialog(tag: tag),

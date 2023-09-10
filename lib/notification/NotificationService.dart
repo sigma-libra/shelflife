@@ -73,4 +73,8 @@ class NotificationService {
   Future<void> deleteNotification(int productId) async {
     await _localNotificationService.cancel(productId);
   }
+
+  Future<void> cancelAllNotifications() async {
+    await _localNotificationService.cancelAll();
+  }
 }

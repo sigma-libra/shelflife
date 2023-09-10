@@ -11,8 +11,9 @@ import 'package:shelflife/utils.dart';
 class AddProductDialog extends StatefulWidget {
   final Product? product;
   final List<Tag> tags;
+  final String currencySymbol;
 
-  const AddProductDialog({Key? key, this.product, required this.tags}) : super(key: key);
+  const AddProductDialog({Key? key, this.product, required this.tags, required this.currencySymbol}) : super(key: key);
 
   @override
   _AddProductDialogState createState() => _AddProductDialogState();
@@ -60,7 +61,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
           children: [
             textField(nameController, "Product Name"),
             textField(purposeController, "Product Purpose"),
-            numberField(priceController, "Price", decimals: 2),
+            numberField(priceController, "Price", decimals: 2, isCurrency: true),
             numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
             boolField("Replace", replaceValue),
             tagField(widget.product)
@@ -123,7 +124,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 
-  Row numberField(TextEditingController controller, String fieldLabel, {int decimals = 0}) {
+  Row numberField(TextEditingController controller, String fieldLabel, {int decimals = 0, bool isCurrency = false}) {
     TextInputType keyboardType = (decimals > 0) ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.number;
     double textFieldWidth = (decimals > 0) ? (decimals * 16.0) + 40.0 : 50.0;
     return Row(
@@ -132,10 +133,21 @@ class _AddProductDialogState extends State<AddProductDialog> {
         Text(fieldLabel),
         SizedBox(
           width: textFieldWidth,
-          child: TextField(
-            controller: controller,
-            keyboardType: keyboardType,
-            textAlign: TextAlign.center,
+          child: Row(
+            children: [
+              if (isCurrency)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(widget.currencySymbol),
+                ),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
         ),
       ],

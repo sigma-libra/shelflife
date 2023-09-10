@@ -21,4 +21,16 @@ class Utils {
   static int monthsLeftOnProduct(Product product) {
     return (product.monthsToReplacement! - (DateTime.fromMillisecondsSinceEpoch(product.saveTime).difference(DateTime.now()).inDays / 30)).toInt();
   }
+
+  static String timeOfDayToString(TimeOfDay timeOfDay) {
+    return "${timeOfDay.hour}:${timeOfDay.minute}";
+  }
+
+  static TimeOfDay stringToTimeOfDay(String value) {
+    final parts = value.split(':');
+    return TimeOfDay(
+      hour: int.parse(parts[0]),
+      minute: int.parse(parts[1]),
+    );
+  }
 }

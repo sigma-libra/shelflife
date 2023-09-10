@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shelflife/colors.dart';
+import 'package:shelflife/constants.dart';
 import 'package:shelflife/notification/NotificationService.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/product/product_card.dart';
+import 'package:shelflife/settings/settings_page.dart';
 import 'package:shelflife/tag/tag.dart';
 import 'package:shelflife/tag/tags_page.dart';
+import 'package:shelflife/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(TagAdapter());
-  await Hive.openBox<Product>('productBox');
-  await Hive.openBox<Tag>("tagBox");
+  await Hive.openBox<Product>(HIVE_PRODUCT_BOX);
+  await Hive.openBox<Tag>(HIVE_TAG_BOX);
+  await Hive.openBox(HIVE_SETTINGS_BOX);
   runApp(const MyApp());
 }
 
@@ -45,17 +49,20 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  var productBox = Hive.box<Product>('productBox');
-  var tagBox = Hive.box<Tag>("tagBox");
-  var filterTags = List<String>.empty();
-  var textFilter = "";
+  late Box<Product> productBox;
+  late Box<Tag> tagBox;
+  late Box settingsBox;
+  late List<String> filterTags;
+  late String textFilter;
   late NotificationService notificationService;
 
   @override
   void initState() {
-    productBox = Hive.box<Product>('productBox');
-    tagBox = Hive.box<Tag>("tagBox");
+    productBox = Hive.box<Product>(HIVE_PRODUCT_BOX);
+    tagBox = Hive.box<Tag>(HIVE_TAG_BOX);
+    settingsBox = Hive.box(HIVE_SETTINGS_BOX);
     filterTags = List<String>.empty();
+    textFilter = "";
     notificationService = NotificationService();
     notificationService.init();
     super.initState();
@@ -65,12 +72,23 @@ class _ProductsPageState extends State<ProductsPage> {
     if (!isNew) {
       notificationService.deleteNotification(product.productId);
     }
+    String timeString = settingsBox.get(HIVE_NOTIFICATION_TIME_KEY, defaultValue: Utils.timeOfDayToString(DEFAULT_NOTIFICATION_TIME));
+    TimeOfDay time = Utils.stringToTimeOfDay(timeString);
+    DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
     if (product.monthsToReplacement != null) {
       notificationService.showScheduledNotification(
           id: product.productId,
           title: "${product.name} reaching the end of its shelf life",
           body: "To extend its shelf-life, open the app to reset.",
-          date: DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30)));
+          date: notificationDate.copyWith(hour: time.hour, minute: time.minute, second: 0));
+    }
+  }
+
+  void resetNotifications() {
+    for (Product product in productBox.values) {
+      if (product.monthsToReplacement != null) {
+        setNotification(product, false);
+      }
     }
   }
 
@@ -81,6 +99,7 @@ class _ProductsPageState extends State<ProductsPage> {
         MaterialPageRoute(
             builder: (context) => AddProductDialog(
                   tags: tags,
+                  currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
                 )));
 
     setState(() {
@@ -97,6 +116,7 @@ class _ProductsPageState extends State<ProductsPage> {
             builder: (context) => AddProductDialog(
                   product: product,
                   tags: tags,
+                  currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
                 )));
     setState(() {
       productBox.put(product.key, newProduct);
@@ -164,7 +184,8 @@ class _ProductsPageState extends State<ProductsPage> {
                   ),
                 );
               } else if (value == 'Settings') {
-                // Handle the "Settings" option
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(settingsBox: settingsBox)))
+                    .then((value) => resetNotifications());
               }
             },
             itemBuilder: (BuildContext context) {
@@ -194,6 +215,7 @@ class _ProductsPageState extends State<ProductsPage> {
               onDelete: () => deleteProduct(product),
               onEdit: () => editProduct(product),
               tags: tagBox.values.toList(),
+              currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
             ),
           );
         },
