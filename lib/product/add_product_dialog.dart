@@ -53,7 +53,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: PALE_ORANGE,
       title: const Text('Add New Product'),
       content: SingleChildScrollView(
         child: Column(
@@ -112,7 +111,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
           valueListenable: fieldValue,
           builder: (context, value, child) {
             return Switch(
-              activeColor: WALL_BLUE,
+              activeColor: JAR_RED,
               value: value,
               onChanged: (newValue) {
                 fieldValue.value = newValue;

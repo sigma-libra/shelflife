@@ -31,11 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shelf Life',
-      theme: ThemeData(
-        scaffoldBackgroundColor: WALL_BLUE,
-        colorScheme: ColorScheme.fromSeed(seedColor: ORANGE),
-        useMaterial3: true,
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: JAR_BLUE),
       home: const ProductsPage(),
     );
   }
@@ -74,8 +70,8 @@ class _ProductsPageState extends State<ProductsPage> {
     }
     String timeString = settingsBox.get(HIVE_NOTIFICATION_TIME_KEY, defaultValue: Utils.timeOfDayToString(DEFAULT_NOTIFICATION_TIME));
     TimeOfDay time = Utils.stringToTimeOfDay(timeString);
-    DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
     if (product.monthsToReplacement != null) {
+      DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
       notificationService.showScheduledNotification(
           id: product.productId,
           title: "${product.name} reaching the end of its shelf life",
@@ -159,20 +155,17 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: DARK_BROWN,
+        backgroundColor: JAR_BLUE,
         title: const Text(
           "Your Products",
-          style: TextStyle(color: ORANGE),
         ),
         actions: [
           IconButton(
               onPressed: () => _showTagMultiSelect(context),
               icon: const Icon(
                 Icons.filter_list,
-                color: WALL_BLUE,
               )),
           PopupMenuButton<String>(
-            color: WALL_BLUE,
             onSelected: (String value) {
               if (value == 'Tags') {
                 Navigator.push(
@@ -235,12 +228,10 @@ class _ProductsPageState extends State<ProductsPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: ORANGE,
         onPressed: () => addProduct(),
         tooltip: 'Add Product',
         child: const Icon(
           Icons.add,
-          color: DARK_BROWN,
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

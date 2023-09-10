@@ -18,7 +18,8 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tagMap = {for (var v in tags) v.name: v};
     return Card(
-      color: LIGHT_BROWN,
+      color: SHELF_BROWN,
+      shadowColor: JAR_YELLOW,
       elevation: 4,
       child: Stack(
         children: [
@@ -26,9 +27,9 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
+                tileColor: SHELF_TOP_BROWN,
                 leading: const Icon(
                   Icons.scale,
-                  color: ORANGE,
                 ),
                 title: Text(
                   product.name,
@@ -44,9 +45,12 @@ class ProductCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Replace: ${product.replace ? "Yes" : "No"}',
-                      style: defaultTextStyle(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        'Replace: ${product.replace ? "Yes" : "No"}',
+                        style: defaultTextStyle(),
+                      ),
                     ),
                     if (product.monthsToReplacement != null)
                       Text(
@@ -54,9 +58,12 @@ class ProductCard extends StatelessWidget {
                         style: defaultTextStyle(),
                       ),
                     if (product.price != null)
-                      Text(
-                        'Cost: $currencySymbol${product.price}',
-                        style: defaultTextStyle(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                          'Cost: $currencySymbol${product.price}',
+                          style: defaultTextStyle(),
+                        ),
                       ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -67,7 +74,7 @@ class ProductCard extends StatelessWidget {
                               label: Text(tag),
                               backgroundColor: Color(tagMap[tag]!.color),
                               labelStyle: defaultTextStyle(),
-                              side: const BorderSide(color: LIGHT_BROWN),
+                              side: const BorderSide(color: SHELF_BROWN),
                               visualDensity: VisualDensity.compact,
                             ),
                         ],
@@ -88,7 +95,6 @@ class ProductCard extends StatelessWidget {
                 decoration: defaultBoxDecoration(),
                 child: const Icon(
                   Icons.close,
-                  color: ORANGE,
                   size: 16,
                 ),
               ),
@@ -104,7 +110,6 @@ class ProductCard extends StatelessWidget {
                 decoration: defaultBoxDecoration(),
                 child: const Icon(
                   Icons.edit,
-                  color: ORANGE,
                   size: 16,
                 ),
               ),
@@ -122,7 +127,7 @@ class ProductCard extends StatelessWidget {
   BoxDecoration defaultBoxDecoration() {
     return const BoxDecoration(
       shape: BoxShape.rectangle,
-      color: DARK_BROWN,
+      color: JAR_GREEN,
     );
   }
 }
