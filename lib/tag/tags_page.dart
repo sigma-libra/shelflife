@@ -52,6 +52,7 @@ class _TagsPageState extends State<TagsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tags'),
+        backgroundColor: JAR_BLUE,
       ),
       body: Column(
         children: [

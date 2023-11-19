@@ -34,7 +34,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
     purposeController = TextEditingController(text: widget.product?.purpose ?? "");
     monthsToReplacementController = TextEditingController(text: widget.product?.monthsToReplacement?.toString() ?? "");
     replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
-    priceController = TextEditingController(text: widget.product?.price.toString() ?? "");
+    final initialPrice = widget.product?.price == null ? "" : widget.product?.price.toString();
+    priceController = TextEditingController(text: initialPrice);
     final existingTagNames = {for (var v in widget.tags) v.name: v};
     selectedTags = widget.product?.tags != null
         ? widget.product!.tags
@@ -89,7 +90,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
             Navigator.of(context).pop(product); // Close the dialog
           },
-          child: Text((widget.product != null) ? "Edit" : 'Add'),
+          child: Text((widget.product != null) ? "Save" : 'Add'),
         ),
       ],
     );
@@ -158,8 +159,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
       children: [
         Expanded(
           child: MultiSelectDialogField<Tag>(
+            isDismissible: false,
+            backgroundColor: JAR_GREEN,
             buttonText: const Text("Select Tags"),
-            title: const Text("Tags"),
+            title: Text(widget.tags.isEmpty ? "No Tags to Select" : "Select Tags"),
             initialValue: selectedTags,
             items: widget.tags.map((e) => MultiSelectItem(e, e.name)).toList(),
             onConfirm: (values) {
