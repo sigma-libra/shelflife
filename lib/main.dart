@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/constants.dart';
-import 'package:shelflife/notification/NotificationService.dart';
+import 'package:shelflife/notification/notification_service.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/product/product_card.dart';
@@ -20,6 +21,11 @@ void main() async {
   await Hive.openBox<Product>(HIVE_PRODUCT_BOX);
   await Hive.openBox<Tag>(HIVE_TAG_BOX);
   await Hive.openBox(HIVE_SETTINGS_BOX);
+
+  if (!(await Permission.notification.status.isGranted)) {
+    PermissionStatus status = await Permission.notification.request();
+  }
+
   runApp(const MyApp());
 }
 
@@ -131,6 +137,7 @@ class _ProductsPageState extends State<ProductsPage> {
       context: context,
       builder: (ctx) {
         return MultiSelectDialog<Tag>(
+          title: Text(tagBox.values.isEmpty ? "No Tags Created" : "Filter by Tags"),
           items: tagBox.values.map((e) => MultiSelectItem(e, e.name)).toList(),
           initialValue: tagBox.values.where((e) => filterTags.contains(e.name)).toList(),
           colorator: (tag) => Color(tag.color),
@@ -185,7 +192,7 @@ class _ProductsPageState extends State<ProductsPage> {
               return [
                 const PopupMenuItem(
                   value: 'Tags',
-                  child: Text('Tags'),
+                  child: Text('Manage Tags'),
                 ),
                 const PopupMenuItem(
                   value: 'Settings',
