@@ -30,9 +30,12 @@ class ProductCard extends StatelessWidget {
                 leading: const Icon(
                   Icons.scale,
                 ),
-                title: Text(
-                  product.name,
-                  style: defaultTextStyle(),
+                title: Padding(
+                  padding: const EdgeInsets.only(top: 24.0),
+                  child: Text(
+                    product.name,
+                    style: defaultTextStyle(),
+                  ),
                 ),
                 subtitle: Text(
                   product.purpose,
@@ -45,7 +48,7 @@ class ProductCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
                         'Replace: ${product.replace ? "Yes" : "No"}',
                         style: defaultTextStyle(),
