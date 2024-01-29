@@ -31,7 +31,7 @@ class ProductCard extends StatelessWidget {
                   Icons.scale,
                 ),
                 title: Padding(
-                  padding: const EdgeInsets.only(top: 24.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
                     product.name,
                     style: defaultTextStyle(),
