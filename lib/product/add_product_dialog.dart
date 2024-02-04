@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
@@ -6,14 +7,15 @@ import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
+import 'package:shelflife/tag/tags_page.dart';
 import 'package:shelflife/utils.dart';
 
 class AddProductDialog extends StatefulWidget {
   final Product? product;
-  final List<Tag> tags;
+  final Box<Tag> tagBox;
   final String currencySymbol;
 
-  const AddProductDialog({Key? key, this.product, required this.tags, required this.currencySymbol}) : super(key: key);
+  const AddProductDialog({Key? key, this.product, required this.tagBox, required this.currencySymbol}) : super(key: key);
 
   @override
   _AddProductDialogState createState() => _AddProductDialogState();
@@ -25,6 +27,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
   late TextEditingController monthsToReplacementController;
   late ValueNotifier<bool> replaceValue;
   late TextEditingController priceController;
+  late List<Tag> tags;
   late List<Tag> selectedTags;
 
   @override
@@ -36,7 +39,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
     replaceValue = ValueNotifier<bool>(widget.product?.replace ?? false);
     final initialPrice = widget.product?.price == null ? "" : widget.product?.price.toString();
     priceController = TextEditingController(text: initialPrice);
-    final existingTagNames = {for (var v in widget.tags) v.name: v};
+    tags = widget.tagBox.values.toList();
+    final existingTagNames = {for (var v in tags) v.name: v};
     selectedTags = widget.product?.tags != null
         ? widget.product!.tags
             .where((productTag) => existingTagNames.keys.contains(productTag))
@@ -75,6 +79,20 @@ class _AddProductDialogState extends State<AddProductDialog> {
           },
           child: const Text('Cancel'),
         ),
+        TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TagsPage(
+                    tagsBox: widget.tagBox,
+                  ),
+                ),
+              ).then((value) => setState(() {
+                    tags = widget.tagBox.values.toList();
+                  }));
+            },
+            child: const Text("Edit Tags")),
         TextButton(
           onPressed: () {
             // Create a new product object with the user input
@@ -162,9 +180,9 @@ class _AddProductDialogState extends State<AddProductDialog> {
             isDismissible: false,
             backgroundColor: JAR_GREEN,
             buttonText: const Text("Select Tags"),
-            title: Text(widget.tags.isEmpty ? "No Tags to Select" : "Select Tags"),
+            title: Text(tags.isEmpty ? "No Tags to Select" : "Select Tags"),
             initialValue: selectedTags,
-            items: widget.tags.map((e) => MultiSelectItem(e, e.name)).toList(),
+            items: tags.map((e) => MultiSelectItem(e, e.name)).toList(),
             onConfirm: (values) {
               selectedTags = values;
             },
