@@ -95,12 +95,11 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Future<void> addProduct() async {
-    List<Tag> tags = tagBox.values.toList();
     Product newProduct = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => AddProductDialog(
-                  tags: tags,
+                  tagBox: tagBox,
                   currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
                 )));
 
@@ -111,13 +110,12 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Future<void> editProduct(Product product) async {
-    List<Tag> tags = tagBox.values.toList();
     Product newProduct = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => AddProductDialog(
                   product: product,
-                  tags: tags,
+                  tagBox: tagBox,
                   currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
                 )));
     setState(() {
