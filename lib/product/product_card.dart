@@ -4,8 +4,6 @@ import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
 import 'package:shelflife/utils.dart';
 
-int MARGIN = 4;
-
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onDelete;
@@ -43,7 +41,7 @@ class ProductCard extends StatelessWidget {
                     Icons.scale,
                   ),
                   title: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(top: 28.0),
                     child: Text(
                       product.name,
                       style: defaultTextStyle(),
@@ -100,8 +98,8 @@ class ProductCard extends StatelessWidget {
               ],
             ),
             Positioned(
-              top: 4,
-              right: 4,
+              top: 8,
+              right: 8,
               child: GestureDetector(
                 onTap: onDelete,
                 child: Container(
@@ -115,8 +113,8 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 4,
-              right: 32,
+              top: 8,
+              right: 40,
               child: GestureDetector(
                 onTap: onEdit,
                 child: Container(
@@ -130,8 +128,8 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 4,
-              right: 64,
+              top: 8,
+              right: 72,
               child: GestureDetector(
                 onTap: onDuplicate,
                 child: Container(
