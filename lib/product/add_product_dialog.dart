@@ -67,7 +67,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
             textField(purposeController, "Product Purpose"),
             numberField(priceController, "Price", decimals: 2, isCurrency: true),
             numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
-            boolField("Replace", replaceValue),
+            boolField("Get Again", replaceValue),
             tagField(widget.product)
           ],
         ),

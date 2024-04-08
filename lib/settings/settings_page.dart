@@ -1,6 +1,5 @@
 import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/constants.dart';
 import 'package:hive/hive.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/constants.dart';
