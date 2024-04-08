@@ -104,7 +104,24 @@ class _ProductsPageState extends State<ProductsPage> {
                 )));
 
     setState(() {
-      productBox.put(productBox.length, newProduct);
+      productBox.put(newProduct.productId, newProduct);
+      setNotification(newProduct, true);
+    });
+  }
+
+  Future<void> duplicateProduct(Product product) async {
+    Product newProduct = Product(
+        productId: Utils.randomId(),
+        name: product.name,
+        saveTime: DateTime.now().millisecondsSinceEpoch,
+        monthsToReplacement: product.monthsToReplacement,
+        purpose: product.purpose,
+        replace: product.replace,
+        price: product.price,
+        tags: product.tags);
+
+    setState(() {
+      productBox.put(newProduct.productId, newProduct);
       setNotification(newProduct, true);
     });
   }
@@ -212,6 +229,7 @@ class _ProductsPageState extends State<ProductsPage> {
               product: product,
               onDelete: () => deleteProduct(product),
               onEdit: () => editProduct(product),
+              onDuplicate: () => duplicateProduct(product),
               tags: tagBox.values.toList(),
               currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
             ),
