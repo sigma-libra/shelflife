@@ -201,6 +201,8 @@ class _ProductsPageState extends State<ProductsPage> {
               } else if (value == 'Settings') {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(settingsBox: settingsBox)))
                     .then((value) => resetNotifications());
+              } else if (value == "Test Alert") {
+                notificationService.showNotification(id: 1000, title: "Test", body: "Testing");
               }
             },
             itemBuilder: (BuildContext context) {
@@ -213,6 +215,10 @@ class _ProductsPageState extends State<ProductsPage> {
                   value: 'Settings',
                   child: Text('Settings'),
                 ),
+                //const PopupMenuItem(
+                //  value: "Test Alert",
+                //  child: Text("Test alert"),
+                //),
               ];
             },
           ),
