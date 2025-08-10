@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';

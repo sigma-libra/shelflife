@@ -24,17 +24,17 @@ if (flutterVersionName == null) {
 
 android {
     namespace "libra.sigma.shelflife"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 36
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -47,7 +47,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -67,8 +67,8 @@ flutter {
 }
 
 dependencies {
-    implementation "com.google.android.material:material:1.8.0"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
-    implementation "androidx.window:window:1.0.0"
-    implementation "androidx.window:window-java:1.0.0"
+    implementation "androidx.window:window:1.4.0"
+    implementation "androidx.window:window-java:1.4.0"
+    implementation "com.google.android.material:material:1.12.0"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }

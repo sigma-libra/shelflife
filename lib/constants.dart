@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shelflife/utils.dart';
 
 const HIVE_NOTIFICATION_TIME_KEY = "notification_time";
 const HIVE_CURRENCY_KEY = "currency";
