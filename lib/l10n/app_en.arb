@@ -1,0 +1,69 @@
+{
+  "appTitle": "Shelf Life",
+  "yourProducts": "Your Products",
+  "addProduct": "Add Product",
+  "noTagsCreated": "No Tags Created",
+  "filterByTags": "Filter by Tags",
+  "manageTags": "Manage Tags",
+  "settings": "Settings",
+  "testAlert": "Test alert",
+  "tags": "Tags",
+  "addNewTag": "Add a new tag",
+  "tagCannotBeEmpty": "Tag cannot be empty!",
+  "tagAlreadyExists": "{tag} already exists",
+  "@tagAlreadyExists": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "selectColor": "Select a Color",
+  "done": "Done",
+  "notificationTime": "Notification Time",
+  "currency": "Currency",
+  "addNewProduct": "Add New Product",
+  "productName": "Product Name",
+  "productPurpose": "Product Purpose",
+  "price": "Price",
+  "monthsToReplacement": "Months to Replacement",
+  "getAgain": "Get Again",
+  "cancel": "Cancel",
+  "editTags": "Edit Tags",
+  "save": "Save",
+  "add": "Add",
+  "selectTags": "Select Tags",
+  "noTagsToSelect": "No Tags to Select",
+  "getAgainYes": "Get Again: Yes",
+  "getAgainNo": "Get Again: No",
+  "monthsToReplacementLabel": "Months to Replacement: {months}",
+  "@monthsToReplacementLabel": {
+    "placeholders": {
+      "months": {
+        "type": "String"
+      }
+    }
+  },
+  "cost": "Cost: {currency}{price}",
+  "@cost": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationTitle": "{name} reaching the end of its shelf life",
+  "@notificationTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationBody": "To extend its shelf-life, open the app to reset.",
+  "notificationChannelName": "ShelfLife Notification",
+  "notificationChannelDescription": "Channel for notification of a product drawing to the end of its shelf-life"
+}

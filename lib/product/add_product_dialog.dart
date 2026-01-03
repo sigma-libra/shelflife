@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:shelflife/colors.dart';
+import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
 import 'package:shelflife/tag/tags_page.dart';
@@ -55,16 +56,16 @@ class _AddProductDialogState extends State<AddProductDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add New Product'),
+      title: Text(AppLocalizations.of(context)!.addNewProduct),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            textField(nameController, "Product Name"),
-            textField(purposeController, "Product Purpose"),
-            numberField(priceController, "Price", decimals: 2, isCurrency: true),
-            numberField(monthsToReplacementController, "Months to Replacement", decimals: 0),
-            boolField("Get Again", replaceValue),
+            textField(nameController, AppLocalizations.of(context)!.productName),
+            textField(purposeController, AppLocalizations.of(context)!.productPurpose),
+            numberField(priceController, AppLocalizations.of(context)!.price, decimals: 2, isCurrency: true),
+            numberField(monthsToReplacementController, AppLocalizations.of(context)!.monthsToReplacement, decimals: 0),
+            boolField(AppLocalizations.of(context)!.getAgain, replaceValue),
             tagField(widget.product)
           ],
         ),
@@ -74,7 +75,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
           onPressed: () {
             Navigator.of(context).pop(); // Close the dialog
           },
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
             onPressed: () {
@@ -89,7 +90,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                     tags = widget.tagBox.values.toList();
                   }));
             },
-            child: const Text("Edit Tags")),
+            child: Text(AppLocalizations.of(context)!.editTags)),
         TextButton(
           onPressed: () {
             // Create a new product object with the user input
@@ -105,7 +106,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
             Navigator.of(context).pop(product); // Close the dialog
           },
-          child: Text((widget.product != null) ? "Save" : 'Add'),
+          child: Text((widget.product != null) ? AppLocalizations.of(context)!.save : AppLocalizations.of(context)!.add),
         ),
       ],
     );
@@ -176,8 +177,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
           child: MultiSelectDialogField<Tag>(
             isDismissible: false,
             backgroundColor: JAR_GREEN,
-            buttonText: const Text("Select Tags"),
-            title: Text(tags.isEmpty ? "No Tags to Select" : "Select Tags"),
+            buttonText: Text(AppLocalizations.of(context)!.selectTags),
+            title: Text(tags.isEmpty ? AppLocalizations.of(context)!.noTagsToSelect : AppLocalizations.of(context)!.selectTags),
             initialValue: selectedTags,
             items: tags.map((e) => MultiSelectItem(e, e.name)).toList(),
             onConfirm: (values) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shelflife/colors.dart';
+import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
 import 'package:shelflife/utils.dart';
@@ -60,20 +61,20 @@ class ProductCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Text(
-                          'Get Again: ${product.replace ? "Yes" : "No"}',
+                          product.replace ? AppLocalizations.of(context)!.getAgainYes : AppLocalizations.of(context)!.getAgainNo,
                           style: defaultTextStyle(),
                         ),
                       ),
                       if (product.monthsToReplacement != null)
                         Text(
-                          'Months to Replacement: ${Utils.monthsLeftOnProduct(product)}',
+                          AppLocalizations.of(context)!.monthsToReplacementLabel(Utils.monthsLeftOnProduct(product).toString()),
                           style: defaultTextStyle(),
                         ),
                       if (product.price != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Cost: $currencySymbol${product.price}',
+                            AppLocalizations.of(context)!.cost(currencySymbol, product.price.toString()),
                             style: defaultTextStyle(),
                           ),
                         ),
