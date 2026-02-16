@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:hive/hive.dart';
 import 'package:shelflife/colors.dart';
+import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/tag/tag.dart';
 
 class TagsPage extends StatefulWidget {
@@ -30,13 +31,13 @@ class _TagsPageState extends State<TagsPage> {
     if (widget.tagsBox.containsKey(newTag)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$newTag already exists'),
+          content: Text(AppLocalizations.of(context)!.tagAlreadyExists(newTag)),
         ),
       );
     } else if (newTag.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tag cannot be empty!'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.tagCannotBeEmpty),
         ),
       );
     } else {
@@ -51,7 +52,7 @@ class _TagsPageState extends State<TagsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tags'),
+        title: Text(AppLocalizations.of(context)!.tags),
         backgroundColor: JAR_BLUE,
       ),
       body: Column(
@@ -64,7 +65,7 @@ class _TagsPageState extends State<TagsPage> {
                 addTag();
               },
               decoration: InputDecoration(
-                hintText: 'Add a new tag',
+                hintText: AppLocalizations.of(context)!.addNewTag,
                 prefixIcon: IconButton(
                   icon: const Icon(Icons.color_lens),
                   color: _selectedColor,
@@ -122,7 +123,7 @@ class _TagsPageState extends State<TagsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select a Color'),
+          title: Text(AppLocalizations.of(context)!.selectColor),
           content: SingleChildScrollView(
             child: BlockPicker(
               pickerColor: tag?.color != null ? Color(tag!.color) : _selectedColor,
@@ -140,7 +141,7 @@ class _TagsPageState extends State<TagsPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Done'),
+              child: Text(AppLocalizations.of(context)!.done),
               onPressed: () {
                 Navigator.of(context).pop();
               },

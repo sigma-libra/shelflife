@@ -4,6 +4,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/constants.dart';
+import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/notification/notification_service.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
 import 'package:shelflife/product/product.dart';
@@ -36,9 +37,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Shelf Life',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: JAR_BLUE),
       home: const ProductsPage(),
+      builder: (context, child) {
+        return Title(
+          title: AppLocalizations.of(context)!.appTitle,
+          color: Colors.black,
+          child: child!,
+        );
+      },
     );
   }
 }
@@ -70,6 +79,15 @@ class _ProductsPageState extends State<ProductsPage> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    notificationService.setChannelLocalization(
+      AppLocalizations.of(context)!.notificationChannelName,
+      AppLocalizations.of(context)!.notificationChannelDescription,
+    );
+  }
+
   void setNotification(Product product, bool isNew) {
     if (!isNew) {
       notificationService.deleteNotification(product.productId);
@@ -80,8 +98,8 @@ class _ProductsPageState extends State<ProductsPage> {
       DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
       notificationService.showScheduledNotification(
           id: product.productId,
-          title: "${product.name} reaching the end of its shelf life",
-          body: "To extend its shelf-life, open the app to reset.",
+          title: AppLocalizations.of(context)!.notificationTitle(product.name),
+          body: AppLocalizations.of(context)!.notificationBody,
           date: notificationDate.copyWith(hour: time.hour, minute: time.minute, second: 0));
     }
   }
@@ -152,7 +170,7 @@ class _ProductsPageState extends State<ProductsPage> {
       context: context,
       builder: (ctx) {
         return MultiSelectDialog<Tag>(
-          title: Text(tagBox.values.isEmpty ? "No Tags Created" : "Filter by Tags"),
+          title: Text(tagBox.values.isEmpty ? AppLocalizations.of(context)!.noTagsCreated : AppLocalizations.of(context)!.filterByTags),
           items: tagBox.values.map((e) => MultiSelectItem(e, e.name)).toList(),
           initialValue: tagBox.values.where((e) => filterTags.contains(e.name)).toList(),
           colorator: (tag) => Color(tag.color),
@@ -178,8 +196,8 @@ class _ProductsPageState extends State<ProductsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: JAR_BLUE,
-        title: const Text(
-          "Your Products",
+        title: Text(
+          AppLocalizations.of(context)!.yourProducts,
         ),
         actions: [
           IconButton(
@@ -207,17 +225,17 @@ class _ProductsPageState extends State<ProductsPage> {
             },
             itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'Tags',
-                  child: Text('Manage Tags'),
+                  child: Text(AppLocalizations.of(context)!.manageTags),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'Settings',
-                  child: Text('Settings'),
+                  child: Text(AppLocalizations.of(context)!.settings),
                 ),
-                //const PopupMenuItem(
+                //PopupMenuItem(
                 //  value: "Test Alert",
-                //  child: Text("Test alert"),
+                //  child: Text(AppLocalizations.of(context)!.testAlert),
                 //),
               ];
             },
@@ -258,7 +276,7 @@ class _ProductsPageState extends State<ProductsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => addProduct(),
-        tooltip: 'Add Product',
+        tooltip: AppLocalizations.of(context)!.addProduct,
         child: const Icon(
           Icons.add,
         ),

@@ -9,6 +9,13 @@ class NotificationService {
   NotificationService();
 
   final _localNotificationService = FlutterLocalNotificationsPlugin();
+  String _channelName = "ShelfLife Notification";
+  String _channelDescription = "Channel for notification of a product drawing to the end of its shelf-life";
+
+  void setChannelLocalization(String channelName, String channelDescription) {
+    _channelName = channelName;
+    _channelDescription = channelDescription;
+  }
 
   Future<void> init() async {
     tz.initializeTimeZones();
@@ -33,17 +40,17 @@ class NotificationService {
   void onSelectNotification(NotificationResponse details) {}
 
   Future<NotificationDetails> _notificationDetails() async {
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+    final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
       "shelflife_end_notification",
-      "ShelfLife Notification",
-      channelDescription: "Channel for notification of a product drawing to the end of its shelf-life",
+      _channelName,
+      channelDescription: _channelDescription,
       importance: Importance.max,
       priority: Priority.max,
       playSound: true,
     );
     const DarwinNotificationDetails iosNotificationDetails = DarwinNotificationDetails();
 
-    return const NotificationDetails(android: androidNotificationDetails, iOS: iosNotificationDetails);
+    return NotificationDetails(android: androidNotificationDetails, iOS: iosNotificationDetails);
   }
 
   Future<void> showNotification({required int id, required String title, required String body}) async {

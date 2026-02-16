@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/constants.dart';
+import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/utils.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -55,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settings),
         backgroundColor: JAR_BLUE,
       ),
       body: Padding(
@@ -64,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             ListTile(
-              title: const Text('Notification Time'),
+              title: Text(AppLocalizations.of(context)!.notificationTime),
               trailing: Text(
                 '${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}',
               ),
@@ -72,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const Divider(),
             ListTile(
-              title: const Text('Currency'),
+              title: Text(AppLocalizations.of(context)!.currency),
               trailing: ElevatedButton(
                 onPressed: () {
                   showCurrencyPicker(
