@@ -180,6 +180,24 @@ abstract class AppLocalizations {
   /// **'Select a Color'**
   String get selectColor;
 
+  /// No description provided for @changeTagColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Change tag color'**
+  String get changeTagColor;
+
+  /// No description provided for @deleteTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete tag'**
+  String get deleteTag;
+
+  /// No description provided for @tagDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{tag} deleted'**
+  String tagDeleted(String tag);
+
   /// No description provided for @done.
   ///
   /// In en, this message translates to:

@@ -50,6 +50,17 @@ class AppLocalizationsHi extends AppLocalizations {
   String get selectColor => 'एक रंग चुनें';
 
   @override
+  String get changeTagColor => 'टैग का रंग बदलें';
+
+  @override
+  String get deleteTag => 'टैग हटाएं';
+
+  @override
+  String tagDeleted(String tag) {
+    return '$tag हटा दिया गया';
+  }
+
+  @override
   String get done => 'हो गया';
 
   @override

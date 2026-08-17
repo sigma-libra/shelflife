@@ -142,11 +142,20 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
   Row numberField(TextEditingController controller, String fieldLabel, {int decimals = 0, bool isCurrency = false}) {
     TextInputType keyboardType = (decimals > 0) ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.number;
-    double textFieldWidth = (decimals > 0) ? (decimals * 16.0) + 40.0 : 50.0;
+    // Base width is sized for the field's digit budget at 1x. Scaled by the
+    // system font-size setting — the same mechanism JarGauge uses — so typed
+    // digits don't clip at accessibility text sizes; clamped to 2x so a very
+    // large scale factor can't push the field wide enough to overflow the row.
+    final double baseWidth = (decimals > 0) ? (decimals * 16.0) + 40.0 : 50.0;
+    final double textFieldWidth = MediaQuery.textScalerOf(context).scale(baseWidth).clamp(baseWidth, baseWidth * 2.0);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(fieldLabel),
+        Expanded(child: Text(fieldLabel)),
+        // A guaranteed gap now that the label is Expanded — a long or
+        // localized label (German runs ~30% longer) can otherwise butt
+        // straight up against the field with nothing between them.
+        const SizedBox(width: 8.0),
         SizedBox(
           width: textFieldWidth,
           child: Row(

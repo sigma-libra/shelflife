@@ -24,10 +24,9 @@ void main() async {
   await Hive.openBox<Tag>(HIVE_TAG_BOX);
   await Hive.openBox(HIVE_SETTINGS_BOX);
 
-  if (!(await Permission.notification.status.isGranted)) {
-    PermissionStatus status = await Permission.notification.request();
-  }
-
+  // Notification permission is asked for later, in context, the first time a
+  // product actually needs a reminder scheduled — not here, blind, before the
+  // user has seen the app at all.
   runApp(const MyApp());
 }
 
@@ -89,26 +88,46 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  void setNotification(Product product, bool isNew) {
+  Future<void> setNotification(Product product, bool isNew) async {
     if (!isNew) {
       notificationService.deleteNotification(product.productId);
     }
+    if (product.monthsToReplacement == null) {
+      return;
+    }
+
+    // The first product to actually want a reminder is the point of asking —
+    // the user just told us they care about this feature, so the OS dialog
+    // has context instead of appearing over a blank cold-start screen.
+    if (!(await Permission.notification.status.isGranted)) {
+      await Permission.notification.request();
+    }
+    // The permission dialog is an async gap: the page (and its context) may
+    // have been disposed while the user was looking at it.
+    if (!mounted) {
+      return;
+    }
+
     String timeString = settingsBox.get(HIVE_NOTIFICATION_TIME_KEY, defaultValue: Utils.timeOfDayToString(DEFAULT_NOTIFICATION_TIME));
     TimeOfDay time = Utils.stringToTimeOfDay(timeString);
-    if (product.monthsToReplacement != null) {
-      DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
-      notificationService.showScheduledNotification(
-          id: product.productId,
-          title: AppLocalizations.of(context)!.notificationTitle(product.name),
-          body: AppLocalizations.of(context)!.notificationBody,
-          date: notificationDate.copyWith(hour: time.hour, minute: time.minute, second: 0));
-    }
+    DateTime notificationDate = DateTime.fromMillisecondsSinceEpoch(product.saveTime).add(Duration(days: product.monthsToReplacement! * 30));
+    notificationService.showScheduledNotification(
+        id: product.productId,
+        title: AppLocalizations.of(context)!.notificationTitle(product.name),
+        body: AppLocalizations.of(context)!.notificationBody,
+        date: notificationDate.copyWith(hour: time.hour, minute: time.minute, second: 0));
   }
 
-  void resetNotifications() {
+  Future<void> resetNotifications() async {
     for (Product product in productBox.values) {
       if (product.monthsToReplacement != null) {
-        setNotification(product, false);
+        try {
+          await setNotification(product, false);
+        } catch (e) {
+          // One bad reschedule (e.g. a timezone lookup failure) shouldn't
+          // silently drop the reminder for every other product in the list.
+          debugPrint('Failed to reschedule notification for ${product.name}: $e');
+        }
       }
     }
   }
@@ -221,10 +240,15 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   PreferredSizeWidget _activeFilterBar() {
+    // AppBar.bottom needs its height up front, so this can't wrap content the
+    // way a normal widget would — instead the base 52dp scales with the
+    // system font-size setting (the same clamp JarGauge uses) so the chip row
+    // and Clear Filter button have room to grow instead of being cropped.
+    final double barHeight = MediaQuery.textScalerOf(context).scale(52).clamp(52, 52 * 1.6);
     return PreferredSize(
-      preferredSize: const Size.fromHeight(52),
+      preferredSize: Size.fromHeight(barHeight),
       child: Container(
-        height: 52,
+        height: barHeight,
         color: JAR_BLUE,
         child: Row(
           children: [
@@ -271,6 +295,7 @@ class _ProductsPageState extends State<ProductsPage> {
         actions: [
           IconButton(
               onPressed: () => _showTagMultiSelect(context),
+              tooltip: AppLocalizations.of(context)!.filterByTags,
               icon: Badge(
                 isLabelVisible: filterTags.isNotEmpty,
                 label: Text('${filterTags.length}'),

@@ -50,6 +50,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectColor => 'Select a Color';
 
   @override
+  String get changeTagColor => 'Change tag color';
+
+  @override
+  String get deleteTag => 'Delete tag';
+
+  @override
+  String tagDeleted(String tag) {
+    return '$tag deleted';
+  }
+
+  @override
   String get done => 'Done';
 
   @override

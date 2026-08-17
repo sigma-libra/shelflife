@@ -221,6 +221,10 @@ class ProductCard extends StatelessWidget {
     return const BoxDecoration(
       shape: BoxShape.rectangle,
       color: JAR_GREEN,
+      // JAR_GREEN sits at 1.53:1 against SHELF_BROWN — well under the 3:1 a
+      // control boundary needs — so the square's own edge carries the
+      // separation with the one color in the system built for that job.
+      border: Border.fromBorderSide(BorderSide(color: BLACK_BROWN, width: 1)),
     );
   }
 }

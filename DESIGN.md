@@ -9,6 +9,10 @@ colors:
   jar-green: "#C4D9A0"
   jar-yellow: "#F9DE2D"
   jar-red: "#F84038"
+  life-full: "#3A821A"
+  life-low: "#E27C10"
+  life-due: "#F0301F"
+  life-overdue: "#B4200F"
   primary: "#00687B"
   on-primary: "#FFFFFF"
   primary-container: "#AEECFF"
@@ -109,6 +113,9 @@ components:
   tag-chip:
     textColor: "{colors.black-brown}"
     rounded: "{rounded.chip}"
+  jar-gauge:
+    textColor: "{colors.black-brown}"
+    size: "42dp"
   multiselect-field:
     backgroundColor: "{colors.jar-green}"
     textColor: "{colors.black-brown}"
@@ -133,7 +140,7 @@ Density is generous rather than efficient. Cards are tall, padding is a plain 16
 - Material 3 substrate with a hand-painted layer sitting on top of it
 - Physical depth: cards are objects that cast shadows, not tinted regions
 - One typeface (Roboto) at Material 3's stock scale; no custom type
-- Color carries identity, never state — there is no success, warning, or error color in the product surface
+- Color carries identity everywhere except the jar gauge, the system's one state-color exception
 - Right-angled controls deliberately breaking Material's rounded vocabulary
 
 ## Colors
@@ -161,9 +168,18 @@ The hand-picked shelf palette in `lib/colors.dart`, authored as `Color.fromRGBO`
 
 Accent constants, used sparingly and each in exactly one place.
 
-- **Sage Jar Green** (`#C4D9A0`): A soft yellow-green. Fills the three card action squares and the tag multi-select sheet. The system's only "chrome" color.
+- **Sage Jar Green** (`#C4D9A0`): A soft yellow-green. Fills the two card action squares and the tag multi-select sheet. The system's only "chrome" color.
 - **Tomato Jar Red** (`#F84038`): Hot, slightly orange red. Used once, as the active track of the "Get Again" switch.
 - **Lemon Jar Yellow** (`#F9DE2D`): The default color offered when creating a new tag. It seeds the user's palette but is never drawn by the app itself.
+
+### State
+
+The system's one deliberate exception to identity-only color. Reserved exclusively for the jar gauge's fill and outline — the single place shelf-life condition is expressed as color, and read the same stepped way a phone battery gauge is read rather than as a continuous gradient.
+
+- **Full Green** (`#3A821A`): The gauge's fill with more than two months left.
+- **Low Orange** (`#E27C10`): The fill between one and two months left.
+- **Due Red** (`#F0301F`): The fill at one month or less.
+- **Overdue Red** (`#B4200F`): The gauge's outline once the window has closed. The jar draws empty at this state — no fill at all — so the outline carries the entire signal, and is deliberately darker than Due Red so it holds contrast against the card header on its own (3.88:1).
 
 ### Neutral
 
@@ -184,7 +200,7 @@ Generated Material 3 surfaces. Cool-leaning, low-chroma, blue-grey.
 
 **The Borrowed Color Rule.** Tag colors belong to the user, not to the system. They arrive from a `BlockPicker` and may be any hue at any saturation. Never assign meaning to a tag color, never derive a UI color from one, and never assume contrast against one — always pair a tag color with its name.
 
-**The No-State-Color Rule.** This system currently has no color that means good, late, or dangerous. Nothing on the product surface changes color to indicate condition. Any future state color is a genuine addition to the palette, not a re-use of an existing constant.
+**The One State Exception Rule.** State color exists in exactly one place: the jar gauge. Nowhere else on the product surface — not card backgrounds, not text, not chips — changes color to indicate condition, and the gauge always restates its state in adjacent text too, so nothing rests on color alone. A future state need outside the gauge is a genuine new color decision, never a re-use of `LIFE_FULL` / `LIFE_LOW` / `LIFE_DUE` / `LIFE_OVERDUE` or of `JAR_RED` / `JAR_GREEN` / `JAR_YELLOW`.
 
 ## Typography
 
@@ -216,7 +232,7 @@ A single-column vertical list at every screen size, with no breakpoints, no grid
 
 **Spacing rhythm** is a plain 4dp-based scale, sparsely used: `4dp` for the padding inside card action squares, `8dp` for vertical separation between card body lines and for the tag list gutter, and `16dp` for the standard horizontal gutter inside cards and on the Settings and Tags pages. Material's own 4dp card margin sits between stacked cards.
 
-Two measurements sit outside the scale and are load-bearing to the current card composition: a **28dp top pad** above the product name, which is what clears the floating action squares, and a **32dp pitch** between those three squares (right-anchored at 8, 40, and 72dp).
+Two measurements sit outside the scale and are load-bearing to the current card composition: a **28dp top pad** above the product name, which is what clears the floating action squares, and a **32dp pitch** between the two squares (right-anchored at 8 and 40dp). Each square's invisible touch target is a 48dp box centered on it, so the pitch between visible squares stays 32dp while the interactive area meets Android's minimum without changing the shape on screen.
 
 **Rows** are 56dp: the app bar, `ListTile` minimum height, and the FAB all share that measure, which gives the app its one consistent horizontal rhythm.
 
@@ -252,15 +268,17 @@ Rounded by Material default, with one sharp exception that carries most of the a
 
 Cards use a **12dp** radius, chips **8dp**, the FAB **16dp**, and dialogs **28dp** — all stock Material 3 values, none overridden. The card's header strip is a `ListTile` that fills the card's full width and is clipped by the card's own corners, so the top two corners of the lighter `#E0C195` band inherit the 12dp curve while its bottom edge is a hard horizontal line across the card. That line is the shelf's front edge.
 
-The exception: the three action squares are **perfectly square, 0dp radius**. Against a system where everything else is rounded, the right angles read as small applied labels or lids rather than as buttons. It is the one place the app contradicts Material's form language, and it is intentional enough to preserve.
+The exception: the two card-corner action squares are **perfectly square, 0dp radius**. Against a system where everything else is rounded, the right angles read as small applied labels or lids rather than as buttons. It is the one place the app contradicts Material's form language, and it is intentional enough to preserve.
 
-Borders are almost absent. The only one in the product surface is a `#D3A067` hairline around each tag chip — the card's own background color used as a border, so the chip appears cut out of the shelf rather than laid on it.
+Borders are rare and each does a specific job. A `#D3A067` hairline rings each tag chip — the card's own background color used as a border, so the chip appears cut out of the shelf rather than laid on it. A `#2B1719` hairline rings each action square instead, for the opposite reason: Sage Jar Green sits at only 1.53:1 against Shelf Brown, well under the 3:1 a control boundary needs, so the square borrows the system's one color built for edge legibility rather than blending into the card.
 
 ### Named Rules
 
 **The Right-Angle Exception.** Card action controls are square. Everything else follows Material's radius scale. Do not "fix" the squares to match, and do not extend right angles to other components.
 
 **The Cut-Out Border Rule.** When a chip sits on a colored surface, border it with that surface's own color rather than an outline neutral. The chip reads as inset.
+
+**The Legible-Edge Border Rule.** When a control's fill doesn't clear 3:1 against the surface it sits on, border it in `#2B1719` rather than leaving the boundary to contrast alone. Reserved for cases the fill itself can't fix without breaking an established color rule (here, Sage Jar Green's fixed job per the Two-Palette Rule).
 
 ## Components
 
@@ -270,11 +288,21 @@ The one genuinely custom construction in the app, and the thing worth protecting
 
 - **Shape:** 12dp radius, elevation 4, Material's default 4dp outer margin
 - **Background:** Shelf Brown `#D3A067`
-- **Header:** a full-bleed `ListTile` in Shelf Top Brown `#E0C195`, carrying a `scale` icon at the leading edge, the product name as title (pushed down 28dp), and the purpose as subtitle
-- **Body:** 16dp horizontal gutter; a stack of plain 14–16sp lines in `#2B1719` — the Get Again state, months remaining, cost — each separated by 8dp
+- **Header:** a full-bleed `ListTile` in Shelf Top Brown `#E0C195`, carrying the Jar Gauge at the leading edge, the product name as title (pushed down 28dp), and the purpose as subtitle
+- **Body:** 16dp horizontal gutter; a stack of plain 14–16sp lines in `#2B1719` — the shelf-life state line, the Get Again state, months remaining, cost — each separated by 8dp
 - **Tags:** a horizontally scrollable chip row at the bottom, compact density
-- **Actions:** three flat 24dp Sage Green squares pinned to the top-right corner at 8 / 40 / 72dp — duplicate, edit, delete, right to left
-- **Gesture:** the whole card is a `Dismissible`; a swipe in either direction deletes it, with no confirmation and no undo
+- **Actions:** two flat 24dp Sage Green squares, each ringed in a `#2B1719` hairline (the Legible-Edge Border Rule), pinned to the top-right corner at 8 / 40dp — duplicate, edit, right to left. Each visible square sits centered inside its own invisible 48dp touch target, so the control meets Android's minimum without growing the shape that gives the corner its "lid" read.
+- **Gesture:** the whole card is a `Dismissible`; swiping end-to-start (never both directions, so a stray reorder-drag flick can't trigger it) deletes it, with an Undo snackbar. Delete is deliberately absent as a corner action — it's the one irreversible action, so it lives on the swipe rather than sitting 8dp from Edit at the top of the thumb's arc.
+
+### Jar Gauge *(signature component)*
+
+The launcher icon's jar, made to carry state. A custom-painted glass jar that empties as a product's shelf life runs down — the one place in the system where fill color means condition rather than identity.
+
+- **Shape:** a `CustomPainter` silhouette (lid, neck, body) proportioned as fractions of its own box, so it scales cleanly with the system font-size setting instead of the surrounding text shrinking to fit it.
+- **Fill:** stepped, not continuous — full above two months, half between one and two, a red sliver at one month or less, empty when overdue.
+- **Color:** the four State colors above. Glass and default outline are `#2B1719` at low opacity; the overdue state swaps the outline to Overdue Red, since an empty jar needs its own signal rather than reading as merely absent.
+- **Redundancy:** always paired with a text line stating the same fact (months left, or "Overdue"), so the color is never the only channel.
+- **Reuse:** a compact per-product gauge on every card, and a large, flagged instance as the empty-shelf illustration.
 
 ### Chips
 
@@ -290,7 +318,7 @@ Outside the product card, the app uses no container surfaces at all. Settings an
 - **Style:** Material 3 stock — filled-less underline decoration, floating label, no radius, no custom fill
 - **Focus:** underline thickens and shifts to the generated primary `#00687B`; the label lifts and recolors
 - **Error / Disabled:** never styled by product code. Validation on the Tags page is surfaced through a snackbar instead of field-level error text.
-- **Numeric fields** are hard-constrained by width rather than by validation: 50dp for integers, 72dp for two-decimal currency, with the currency symbol as a separate 8dp-spaced prefix outside the field.
+- **Numeric fields** are width-constrained rather than validated: a 50dp base for integers, 72dp for two-decimal currency, with the currency symbol as a separate 8dp-spaced prefix outside the field. The base scales with the system font-size setting (clamped to 2x) so digits don't clip at accessibility text sizes — the same mechanism the Jar Gauge uses to stay legible when scaled.
 
 ### Navigation
 
@@ -313,11 +341,13 @@ Outside the product card, the app uses no container surfaces at all. Settings an
 - **Do** map type to Material roles and let the theme resolve the size, so system font scaling keeps working.
 - **Do** pair every tag color with its tag name, since the color is user-chosen and carries no guaranteed contrast.
 - **Do** border chips with their parent surface's color so they read as cut into it.
+- **Do** keep the jar gauge's state restated in adjacent text — never let color alone carry the shelf-life signal.
 
 ### Don't:
 - **Don't** introduce a second typeface or a literal `fontSize`. The system has neither today.
 - **Don't** give the app bar a per-screen color.
 - **Don't** use `JAR_RED #F84038`, `JAR_GREEN #C4D9A0`, or `JAR_YELLOW #F9DE2D` as state colors. They are identity accents with one fixed job each; recruiting them for meaning would collide with their existing use.
+- **Don't** extend the jar gauge's `LIFE_*` state colors to any other surface — card backgrounds, text, chips. The gauge is the one sanctioned exception, not a precedent.
 - **Don't** derive UI color from a tag color, or assume any contrast against one.
 - **Don't** add tonal-elevation surfaces alongside the shadowed cards. The system expresses depth one way.
 - **Don't** round the card action squares to match Material.
@@ -330,4 +360,3 @@ Recorded as observations, not prescriptions — these are places where the imple
 - **The FAB does not match the app bar.** `colorSchemeSeed: JAR_BLUE` generates `#AEECFF` for the FAB, which is visibly lighter and cooler than the `#99D1E2` bar it was seeded from. Two blues that look like a near-miss rather than a pair.
 - **The generated primary `#00687B` never appears as a fill.** The scheme's most saturated color surfaces only as button text, so the app reads far less teal than its own theme claims.
 - **There is no dark theme.** `ThemeData` declares only a light scheme, and every hardcoded constant is a light-surface value. Enabling dark mode today would put `#2B1719` text on `#D3A067` cards over a dark scaffold.
-- **The three card action squares are 24dp** against Android's 48dp minimum touch target, and sit 32dp apart against a recommended 8dp minimum gap.

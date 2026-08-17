@@ -12,6 +12,16 @@
   "tagCannotBeEmpty": "¡La etiqueta no puede estar vacía!",
   "tagAlreadyExists": "{tag} ya existe",
   "selectColor": "Seleccionar un color",
+  "changeTagColor": "Cambiar el color de la etiqueta",
+  "deleteTag": "Eliminar etiqueta",
+  "tagDeleted": "{tag} eliminada",
+  "@tagDeleted": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
   "done": "Hecho",
   "notificationTime": "Hora de notificación",
   "currency": "Moneda",

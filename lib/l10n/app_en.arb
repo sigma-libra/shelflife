@@ -19,6 +19,16 @@
     }
   },
   "selectColor": "Select a Color",
+  "changeTagColor": "Change tag color",
+  "deleteTag": "Delete tag",
+  "tagDeleted": "{tag} deleted",
+  "@tagDeleted": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
   "done": "Done",
   "notificationTime": "Notification Time",
   "currency": "Currency",

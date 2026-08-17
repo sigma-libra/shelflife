@@ -65,14 +65,16 @@ class _TagsPageState extends State<TagsPage> {
                 addTag();
               },
               decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.addNewTag,
+                labelText: AppLocalizations.of(context)!.addNewTag,
                 prefixIcon: IconButton(
                   icon: const Icon(Icons.color_lens),
                   color: _selectedColor,
+                  tooltip: AppLocalizations.of(context)!.selectColor,
                   onPressed: _openColorPickerDialog,
                 ),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.add),
+                  tooltip: AppLocalizations.of(context)!.add,
                   onPressed: () {
                     setState(() {
                       addTag();
@@ -107,18 +109,40 @@ class _TagsPageState extends State<TagsPage> {
         icon: const Icon(Icons.color_lens),
         color: onColor,
         highlightColor: color,
+        tooltip: AppLocalizations.of(context)!.changeTagColor,
         onPressed: () => _openColorPickerDialog(tag: tag),
       ),
       trailing: IconButton(
         icon: Icon(Icons.delete, color: onColor),
-        onPressed: () {
-          setState(() {
-            // Remove the tag from the list and the Hive box
-            widget.tagsBox.delete(tag.name);
-          });
-        },
+        tooltip: AppLocalizations.of(context)!.deleteTag,
+        onPressed: () => _deleteTag(tag),
       ),
     );
+  }
+
+  /// Deletes immediately, same as a product delete, so both destructive
+  /// actions in the app share one recoverable pattern rather than a tag
+  /// vanishing with no way back.
+  void _deleteTag(Tag tag) {
+    final name = tag.name;
+    final color = tag.color;
+
+    widget.tagsBox.delete(name);
+    setState(() {});
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context)!.tagDeleted(name)),
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          onPressed: () {
+            setState(() {
+              widget.tagsBox.put(name, Tag(name: name, color: color));
+            });
+          },
+        ),
+      ));
   }
 
   void _openColorPickerDialog({Tag? tag}) {

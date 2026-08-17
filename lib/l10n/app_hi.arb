@@ -19,6 +19,16 @@
     }
   },
   "selectColor": "एक रंग चुनें",
+  "changeTagColor": "टैग का रंग बदलें",
+  "deleteTag": "टैग हटाएं",
+  "tagDeleted": "{tag} हटा दिया गया",
+  "@tagDeleted": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
   "done": "हो गया",
   "notificationTime": "सूचना समय",
   "currency": "मुद्रा",
