@@ -50,10 +50,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get selectColor => 'Sélectionner une couleur';
 
   @override
-  String get changeTagColor => "Changer la couleur de l'étiquette";
+  String get changeTagColor => 'Changer la couleur de l\'étiquette';
 
   @override
-  String get deleteTag => "Supprimer l'étiquette";
+  String get deleteTag => 'Supprimer l\'étiquette';
 
   @override
   String tagDeleted(String tag) {
