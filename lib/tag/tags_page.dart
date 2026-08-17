@@ -97,17 +97,20 @@ class _TagsPageState extends State<TagsPage> {
 
   ListTile makeListTile(Tag tag, index) {
     final color = Color(tag.color);
+    // The tile is filled with a colour the user picked, so everything drawn on
+    // it takes whichever of white or near-black actually reads against it.
+    final onColor = labelOn(color);
     return ListTile(
-      title: Text(tag.name),
+      title: Text(tag.name, style: TextStyle(color: onColor)),
       tileColor: color,
       leading: IconButton(
         icon: const Icon(Icons.color_lens),
-        color: BLACK_BROWN,
+        color: onColor,
         highlightColor: color,
         onPressed: () => _openColorPickerDialog(tag: tag),
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.delete),
+        icon: Icon(Icons.delete, color: onColor),
         onPressed: () {
           setState(() {
             // Remove the tag from the list and the Hive box

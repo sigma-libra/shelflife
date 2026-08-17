@@ -30,6 +30,30 @@
   "getAgainYes": "Racheter: Oui",
   "getAgainNo": "Racheter: Non",
   "monthsToReplacementLabel": "Mois avant remplacement: {months}",
+  "monthsLeft": "{count, plural, =1{1 mois restant} other{{count} mois restants}}",
+  "@monthsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overdue": "En retard",
+  "emptyShelfTitle": "Votre étagère est vide",
+  "emptyShelfBody": "Ajoutez ce que vous rachetez et Shelf Life vous préviendra quand il sera temps de le remplacer.",
+  "duplicateProduct": "Dupliquer",
+  "editProduct": "Modifier",
+  "deleteProduct": "Supprimer",
+  "productDeleted": "{name} supprimé",
+  "@productDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Annuler",
+  "clearFilter": "Effacer le filtre",
   "cost": "Coût: {currency}{price}",
   "notificationTitle": "{name} arrive à la fin de sa durée de conservation",
   "notificationBody": "Pour prolonger sa durée de conservation, ouvrez l'application pour réinitialiser.",

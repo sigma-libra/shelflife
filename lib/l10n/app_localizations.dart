@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
+import 'app_localizations_hi.dart';
 
 // ignore_for_file: type=lint
 
@@ -97,7 +98,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
-    Locale('fr')
+    Locale('fr'),
+    Locale('hi')
   ];
 
   /// No description provided for @appTitle.
@@ -286,6 +288,66 @@ abstract class AppLocalizations {
   /// **'Months to Replacement: {months}'**
   String monthsToReplacementLabel(String months);
 
+  /// No description provided for @monthsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month left} other{{count} months left}}'**
+  String monthsLeft(int count);
+
+  /// No description provided for @overdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get overdue;
+
+  /// No description provided for @emptyShelfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on your shelf yet'**
+  String get emptyShelfTitle;
+
+  /// No description provided for @emptyShelfBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the things you re-buy and Shelf Life will tell you when it\'s time to replace them.'**
+  String get emptyShelfBody;
+
+  /// No description provided for @duplicateProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get duplicateProduct;
+
+  /// No description provided for @editProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editProduct;
+
+  /// No description provided for @deleteProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteProduct;
+
+  /// No description provided for @productDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} deleted'**
+  String productDeleted(String name);
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
+
+  /// No description provided for @clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filter'**
+  String get clearFilter;
+
   /// No description provided for @cost.
   ///
   /// In en, this message translates to:
@@ -328,7 +390,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'es', 'fr'].contains(locale.languageCode);
+      <String>['en', 'es', 'fr', 'hi'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -343,6 +405,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsEs();
     case 'fr':
       return AppLocalizationsFr();
+    case 'hi':
+      return AppLocalizationsHi();
   }
 
   throw FlutterError(

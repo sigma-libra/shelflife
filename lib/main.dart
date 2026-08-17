@@ -7,6 +7,7 @@ import 'package:shelflife/constants.dart';
 import 'package:shelflife/l10n/app_localizations.dart';
 import 'package:shelflife/notification/notification_service.dart';
 import 'package:shelflife/product/add_product_dialog.dart';
+import 'package:shelflife/product/empty_shelf.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/product/product_card.dart';
 import 'package:shelflife/settings/settings_page.dart';
@@ -160,9 +161,37 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   void deleteProduct(Product product) {
-    productBox.delete(product.key);
+    // Hold everything needed to put it back. This is the only copy of the
+    // user's data, so an accidental swipe has to be recoverable.
+    final key = product.key;
+    final restored = Product(
+        productId: product.productId,
+        name: product.name,
+        saveTime: product.saveTime,
+        monthsToReplacement: product.monthsToReplacement,
+        purpose: product.purpose,
+        replace: product.replace,
+        price: product.price,
+        tags: product.tags);
+
+    productBox.delete(key);
     notificationService.deleteNotification(product.productId);
     setState(() {});
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context)!.productDeleted(restored.name)),
+        action: SnackBarAction(
+          label: AppLocalizations.of(context)!.undo,
+          onPressed: () {
+            setState(() {
+              productBox.put(key, restored);
+              setNotification(restored, true);
+            });
+          },
+        ),
+      ));
   }
 
   void _showTagMultiSelect(BuildContext context) async {
@@ -191,6 +220,43 @@ class _ProductsPageState extends State<ProductsPage> {
     super.dispose();
   }
 
+  PreferredSizeWidget _activeFilterBar() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(52),
+      child: Container(
+        height: 52,
+        color: JAR_BLUE,
+        child: Row(
+          children: [
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                children: [
+                  for (final tag in filterTags)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Chip(
+                        label: Text(tag),
+                        onDeleted: () => setState(() {
+                          filterTags = List<String>.from(filterTags)..remove(tag);
+                        }),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => setState(() => filterTags = List<String>.empty()),
+              child: Text(AppLocalizations.of(context)!.clearFilter),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,11 +265,18 @@ class _ProductsPageState extends State<ProductsPage> {
         title: Text(
           AppLocalizations.of(context)!.yourProducts,
         ),
+        // A filtered list looks exactly like a short list, so the control says
+        // how many tags are active and the bar below says which.
+        bottom: filterTags.isEmpty ? null : _activeFilterBar(),
         actions: [
           IconButton(
               onPressed: () => _showTagMultiSelect(context),
-              icon: const Icon(
-                Icons.filter_list,
+              icon: Badge(
+                isLabelVisible: filterTags.isNotEmpty,
+                label: Text('${filterTags.length}'),
+                child: const Icon(
+                  Icons.filter_list,
+                ),
               )),
           PopupMenuButton<String>(
             onSelected: (String value) {
@@ -217,8 +290,7 @@ class _ProductsPageState extends State<ProductsPage> {
                   ),
                 );
               } else if (value == 'Settings') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(settingsBox: settingsBox)))
-                    .then((value) => resetNotifications());
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(settingsBox: settingsBox))).then((value) => resetNotifications());
               } else if (value == "Test Alert") {
                 notificationService.showNotification(id: 1000, title: "Test", body: "Testing");
               }
@@ -242,41 +314,47 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
         ],
       ),
-      body: ReorderableListView.builder(
-        itemCount: productBox.length,
-        itemBuilder: (context, index) {
-          Product product = productBox.getAt(index)!;
-          return Visibility(
-            key: Key('$index'),
-            visible: filterTags.isEmpty || product.tags.any((tag) => filterTags.contains(tag)),
-            child: ProductCard(
-              product: product,
-              onDelete: () => deleteProduct(product),
-              onEdit: () => editProduct(product),
-              onDuplicate: () => duplicateProduct(product),
-              tags: tagBox.values.toList(),
-              currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
+      body: productBox.isEmpty
+          ? const EmptyShelf()
+          : ReorderableListView.builder(
+              itemCount: productBox.length,
+              itemBuilder: (context, index) {
+                Product product = productBox.getAt(index)!;
+                return Visibility(
+                  key: Key('$index'),
+                  visible: filterTags.isEmpty || product.tags.any((tag) => filterTags.contains(tag)),
+                  child: ProductCard(
+                    product: product,
+                    onDelete: () => deleteProduct(product),
+                    onEdit: () => editProduct(product),
+                    onDuplicate: () => duplicateProduct(product),
+                    tags: tagBox.values.toList(),
+                    currencySymbol: settingsBox.get(HIVE_CURRENCY_KEY, defaultValue: DEFAULT_CURRENCY),
+                  ),
+                );
+              },
+              onReorder: (int oldIndex, int newIndex) {
+                setState(() {
+                  if (oldIndex < newIndex) {
+                    newIndex -= 1;
+                  }
+                  var productList = productBox.values.toList();
+                  Product movedProduct = productList.removeAt(oldIndex);
+                  productList.insert(newIndex, movedProduct);
+                  for (var i = 0; i < productList.length; i++) {
+                    productBox.delete(productList[i].key);
+                    productBox.put(i, productList[i]);
+                  }
+                });
+              },
             ),
-          );
-        },
-        onReorder: (int oldIndex, int newIndex) {
-          setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
-            var productList = productBox.values.toList();
-            Product movedProduct = productList.removeAt(oldIndex);
-            productList.insert(newIndex, movedProduct);
-            for (var i = 0; i < productList.length; i++) {
-              productBox.delete(productList[i].key);
-              productBox.put(i, productList[i]);
-            }
-          });
-        },
-      ),
+      // Explicitly the scheme's primary rather than the generated container
+      // tint, which sat at 1.23:1 against the scaffold and read as a ghost.
       floatingActionButton: FloatingActionButton(
         onPressed: () => addProduct(),
         tooltip: AppLocalizations.of(context)!.addProduct,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         child: const Icon(
           Icons.add,
         ),

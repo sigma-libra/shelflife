@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:shelflife/colors.dart';
 import 'package:shelflife/l10n/app_localizations.dart';
+import 'package:shelflife/product/jar_gauge.dart';
 import 'package:shelflife/product/product.dart';
 import 'package:shelflife/tag/tag.dart';
-import 'package:shelflife/utils.dart';
+
+/// Header/title clearance for the corner actions. Matches the visible 24dp
+/// squares' original footprint (8dp from the top edge), not the larger
+/// invisible touch target around them.
+const double _actionClearance = 28.0;
+
+/// Android's minimum touch target. The visible control stays 24dp at its
+/// original position — 8dp from the top and right edges, 32dp pitch between
+/// the two — and this invisible area is centred on top of it, rather than
+/// growing the visible footprint outward.
+const double _touchTarget = 48.0;
+const double _touchInset = (_touchTarget - 24.0) / 2;
+const double _actionTop = 8.0 - _touchInset;
+const double _editRight = 8.0 - _touchInset;
+const double _duplicateRight = 8.0 + 32.0 - _touchInset;
+
+/// The jar's own top offset. It shares no horizontal space with the corner
+/// buttons, so it doesn't need their clearance — instead its centre lines up
+/// with the product name's line (title text starts at _actionClearance and
+/// runs about 24dp tall), which leaves less empty header space above it than
+/// borrowing the title's clearance did.
+const double _jarHeight = 56.0;
+const double _jarTop = _actionClearance + 24.0 / 2 - _jarHeight / 2;
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -25,8 +48,13 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tagMap = {for (var v in tags) v.name: v};
+    final life = ShelfLife.of(product);
     return Dismissible(
       key: Key(product.productId.toString()),
+      // One direction only, so a stray horizontal flick while scrolling a
+      // reorderable list cannot destroy a product from either side.
+      direction: DismissDirection.endToStart,
+      background: _swipeToDelete(context),
       onDismissed: (dismissed) => onDelete(),
       child: Card(
         color: SHELF_BROWN,
@@ -38,11 +66,12 @@ class ProductCard extends StatelessWidget {
               children: [
                 ListTile(
                   tileColor: SHELF_TOP_BROWN,
-                  leading: const Icon(
-                    Icons.scale,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(top: _jarTop),
+                    child: JarGauge(life: life, height: _jarHeight),
                   ),
                   title: Padding(
-                    padding: const EdgeInsets.only(top: 28.0),
+                    padding: const EdgeInsets.only(top: _actionClearance),
                     child: Text(
                       product.name,
                       style: defaultTextStyle(),
@@ -54,42 +83,51 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  // A uniform gap after every line, rather than each optional
+                  // field carrying its own padding, so the block reads the
+                  // same whichever fields a product happens to have.
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          product.replace ? AppLocalizations.of(context)!.getAgainYes : AppLocalizations.of(context)!.getAgainNo,
-                          style: defaultTextStyle(),
-                        ),
-                      ),
-                      if (product.monthsToReplacement != null)
-                        Text(
-                          AppLocalizations.of(context)!.monthsToReplacementLabel(Utils.monthsLeftOnProduct(product).toString()),
-                          style: defaultTextStyle(),
-                        ),
-                      if (product.price != null)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
+                      for (final line in [
+                        if (life.state != ShelfLifeState.untracked)
+                          Text(
+                            life.state == ShelfLifeState.overdue
+                                ? AppLocalizations.of(context)!.overdue
+                                : AppLocalizations.of(context)!.monthsLeft(life.monthsLeft),
+                            style: lifeTextStyle(context),
+                          ),
+                        // Only spoken when true. "No" is the absence of the line.
+                        if (product.replace)
+                          Text(
+                            AppLocalizations.of(context)!.getAgainYes,
+                            style: defaultTextStyle(),
+                          ),
+                        if (product.price != null)
+                          Text(
                             AppLocalizations.of(context)!.cost(currencySymbol, product.price.toString()),
                             style: defaultTextStyle(),
                           ),
-                        ),
+                      ]) ...[
+                        line,
+                        const SizedBox(height: 8.0),
+                      ],
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
                             for (String tag in product.tags.where((tag) => tagMap.keys.contains(tag)))
-                              Chip(
-                                label: Text(tag),
-                                backgroundColor: Color(tagMap[tag]!.color),
-                                labelStyle: defaultTextStyle(),
-                                side: const BorderSide(color: SHELF_BROWN),
-                                visualDensity: VisualDensity.compact,
-                              ),
+                              Builder(builder: (context) {
+                                final tagColor = Color(tagMap[tag]!.color);
+                                return Chip(
+                                  label: Text(tag),
+                                  backgroundColor: tagColor,
+                                  labelStyle: TextStyle(color: labelOn(tagColor)),
+                                  side: const BorderSide(color: SHELF_BROWN),
+                                  visualDensity: VisualDensity.compact,
+                                );
+                              }),
                           ],
                         ),
                       )
@@ -98,49 +136,25 @@ class ProductCard extends StatelessWidget {
                 ),
               ],
             ),
+            // Delete is deliberately absent here. It is the one irreversible
+            // action, so it lives on the swipe rather than sitting 8dp from
+            // Edit at the top of the thumb's arc.
             Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: onDelete,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: defaultBoxDecoration(),
-                  child: const Icon(
-                    Icons.close,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 40,
-              child: GestureDetector(
-                onTap: onEdit,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: defaultBoxDecoration(),
-                  child: const Icon(
-                    Icons.edit,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 72,
-              child: GestureDetector(
+              top: _actionTop,
+              right: _duplicateRight,
+              child: _cornerAction(
+                icon: Icons.copy,
+                label: AppLocalizations.of(context)!.duplicateProduct,
                 onTap: onDuplicate,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: defaultBoxDecoration(),
-                  child: const Icon(
-                    Icons.copy,
-                    size: 16,
-                  ),
-                ),
+              ),
+            ),
+            Positioned(
+              top: _actionTop,
+              right: _editRight,
+              child: _cornerAction(
+                icon: Icons.edit,
+                label: AppLocalizations.of(context)!.editProduct,
+                onTap: onEdit,
               ),
             ),
           ],
@@ -149,8 +163,58 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  /// A 24dp square lid on a 48dp target. The square is the visible control;
+  /// the surrounding space is invisible but tappable, so the corner meets
+  /// Android's minimum without growing.
+  Widget _cornerAction({required IconData icon, required String label, required VoidCallback onTap}) {
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        label: label,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: SizedBox(
+            width: _touchTarget,
+            height: _touchTarget,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: defaultBoxDecoration(),
+                child: Icon(icon, size: 16, color: BLACK_BROWN),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Revealed as the card slides away, so the consequence is visible before
+  /// the gesture completes.
+  Widget _swipeToDelete(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.error,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.onError),
+    );
+  }
+
   TextStyle defaultTextStyle() {
     return const TextStyle(color: BLACK_BROWN);
+  }
+
+  /// One size at every state: the jar carries urgency, so the line does not
+  /// need to jump. Resolved from a Material role rather than a literal size so
+  /// system font scaling still governs.
+  TextStyle? lifeTextStyle(BuildContext context) {
+    return Theme.of(context).textTheme.titleMedium?.copyWith(color: BLACK_BROWN);
   }
 
   BoxDecoration defaultBoxDecoration() {

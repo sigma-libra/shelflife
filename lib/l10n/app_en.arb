@@ -44,6 +44,30 @@
       }
     }
   },
+  "monthsLeft": "{count, plural, =1{1 month left} other{{count} months left}}",
+  "@monthsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overdue": "Overdue",
+  "emptyShelfTitle": "Nothing on your shelf yet",
+  "emptyShelfBody": "Add the things you re-buy and Shelf Life will tell you when it's time to replace them.",
+  "duplicateProduct": "Duplicate",
+  "editProduct": "Edit",
+  "deleteProduct": "Delete",
+  "productDeleted": "{name} deleted",
+  "@productDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Undo",
+  "clearFilter": "Clear filter",
   "cost": "Cost: {currency}{price}",
   "@cost": {
     "placeholders": {

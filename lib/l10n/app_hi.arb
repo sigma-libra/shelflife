@@ -1,0 +1,93 @@
+{
+  "appTitle": "शेल्फ लाइफ",
+  "yourProducts": "आपके उत्पाद",
+  "addProduct": "उत्पाद जोड़ें",
+  "noTagsCreated": "कोई टैग नहीं बनाया गया",
+  "filterByTags": "टैग के अनुसार फ़िल्टर करें",
+  "manageTags": "टैग प्रबंधित करें",
+  "settings": "सेटिंग्स",
+  "testAlert": "परीक्षण अलर्ट",
+  "tags": "टैग",
+  "addNewTag": "नया टैग जोड़ें",
+  "tagCannotBeEmpty": "टैग खाली नहीं हो सकता!",
+  "tagAlreadyExists": "{tag} पहले से मौजूद है",
+  "@tagAlreadyExists": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "selectColor": "एक रंग चुनें",
+  "done": "हो गया",
+  "notificationTime": "सूचना समय",
+  "currency": "मुद्रा",
+  "addNewProduct": "नया उत्पाद जोड़ें",
+  "productName": "उत्पाद का नाम",
+  "productPurpose": "उत्पाद का उद्देश्य",
+  "price": "कीमत",
+  "monthsToReplacement": "बदलने तक के महीने",
+  "getAgain": "फिर से लें",
+  "cancel": "रद्द करें",
+  "editTags": "टैग संपादित करें",
+  "save": "सहेजें",
+  "add": "जोड़ें",
+  "selectTags": "टैग चुनें",
+  "noTagsToSelect": "चुनने के लिए कोई टैग नहीं",
+  "getAgainYes": "फिर से लें: हाँ",
+  "getAgainNo": "फिर से लें: नहीं",
+  "monthsToReplacementLabel": "बदलने तक के महीने: {months}",
+  "@monthsToReplacementLabel": {
+    "placeholders": {
+      "months": {
+        "type": "String"
+      }
+    }
+  },
+  "monthsLeft": "{count, plural, =1{1 महीना बचा है} other{{count} महीने बचे हैं}}",
+  "@monthsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overdue": "समय सीमा समाप्त",
+  "emptyShelfTitle": "आपकी शेल्फ पर अभी कुछ नहीं है",
+  "emptyShelfBody": "जो चीज़ें आप दोबारा खरीदते हैं उन्हें जोड़ें, और शेल्फ लाइफ आपको बताएगा कि उन्हें कब बदलना है।",
+  "duplicateProduct": "डुप्लिकेट",
+  "editProduct": "संपादित करें",
+  "deleteProduct": "हटाएं",
+  "productDeleted": "{name} हटा दिया गया",
+  "@productDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "पूर्ववत करें",
+  "clearFilter": "फ़िल्टर साफ़ करें",
+  "cost": "लागत: {currency}{price}",
+  "@cost": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationTitle": "{name} की शेल्फ लाइफ समाप्त होने वाली है",
+  "@notificationTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationBody": "इसकी शेल्फ लाइफ बढ़ाने के लिए, रीसेट करने हेतु ऐप खोलें।",
+  "notificationChannelName": "शेल्फ लाइफ सूचना",
+  "notificationChannelDescription": "किसी उत्पाद की शेल्फ लाइफ समाप्त होने के बारे में सूचना के लिए चैनल"
+}

@@ -106,6 +106,47 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String monthsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count mois restants',
+      one: '1 mois restant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get overdue => 'En retard';
+
+  @override
+  String get emptyShelfTitle => 'Votre étagère est vide';
+
+  @override
+  String get emptyShelfBody =>
+      'Ajoutez ce que vous rachetez et Shelf Life vous préviendra quand il sera temps de le remplacer.';
+
+  @override
+  String get duplicateProduct => 'Dupliquer';
+
+  @override
+  String get editProduct => 'Modifier';
+
+  @override
+  String get deleteProduct => 'Supprimer';
+
+  @override
+  String productDeleted(String name) {
+    return '$name supprimé';
+  }
+
+  @override
+  String get undo => 'Annuler';
+
+  @override
+  String get clearFilter => 'Effacer le filtre';
+
+  @override
   String cost(String currency, String price) {
     return 'Coût: $currency$price';
   }

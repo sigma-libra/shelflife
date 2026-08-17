@@ -30,6 +30,30 @@
   "getAgainYes": "Comprar de nuevo: Sí",
   "getAgainNo": "Comprar de nuevo: No",
   "monthsToReplacementLabel": "Meses hasta el reemplazo: {months}",
+  "monthsLeft": "{count, plural, =1{Queda 1 mes} other{Quedan {count} meses}}",
+  "@monthsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overdue": "Vencido",
+  "emptyShelfTitle": "Tu estante está vacío",
+  "emptyShelfBody": "Añade lo que vuelves a comprar y Shelf Life te avisará cuando toque reemplazarlo.",
+  "duplicateProduct": "Duplicar",
+  "editProduct": "Editar",
+  "deleteProduct": "Eliminar",
+  "productDeleted": "{name} eliminado",
+  "@productDeleted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "undo": "Deshacer",
+  "clearFilter": "Borrar filtro",
   "cost": "Costo: {currency}{price}",
   "notificationTitle": "{name} llegando al final de su vida útil",
   "notificationBody": "Para extender su vida útil, abra la aplicación para reiniciar.",
